@@ -1,0 +1,28 @@
+.loading-overlay {
+  position: absolute;
+  left: 0px;
+  width: 100%;
+  height: calc(100% - 56px);
+  background-color: #282d32;
+  text-align: center;
+  color: azure;
+  transition: 0.25s ease-in-out;
+  > div {
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    line-height: 50px;
+    font-size: 20px;
+    font-weight: 700;
+    > div {
+      position: absolute;
+      width: 400px;
+      top: calc(50% - 33px);
+    }
+  }
+}

@@ -1,0 +1,16 @@
+.app-container {
+  height: calc(100% - 56px);
+  > .row {
+    height: 100%;
+    > div:first-child {
+      background-color: #434a52;
+      height: 100%;
+      padding: 0;
+      border-right: 2px solid #111;
+    }
+    > div:last-child {
+      height: 100%;
+      border-top: 1px solid #111;
+    }
+  }
+}

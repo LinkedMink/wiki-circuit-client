@@ -1,0 +1,31 @@
+.navigation-panel {
+  > a:first-child {
+    border-top: 1px solid #111;
+  }
+  > a {
+    border-bottom: 1px solid #111;
+    font-weight: 700;
+    color: #ddd;
+    transition: 0.15s ease-in-out;
+    > svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 0.5em;
+      fill: #ddd;
+      transition: 0.15s ease-in-out;
+    }
+  }
+  > a:hover {
+    color: #fff;
+    background-color: #302f3e;
+    > svg {
+      fill: #fff;
+    }
+  }
+  > a.active {
+    background-color: #23272c ;
+  }
+  > a.active:hover {
+    background-color: #302f3e;
+  }
+}
