@@ -17,21 +17,25 @@ class VisualizationScreen extends React.Component {
   }
 
   getVisualizationData() {
-    if (!this.props.data) {
-      if (this.props.getVisualizationDataToStore) {
-        this.props.getVisualizationDataToStore(this.props.match.params.id)
+    if (!this.props.article) {
+      if (!this.props.job) {
+        if (this.props.getVisualizationDataToStore) {
+          this.props.getVisualizationDataToStore(this.props.match.params.id)
+        }
+  
+        return {};
       }
 
-      return {};
-    } else if (this.props.data.progress && this.props.getJobStatusToStore) {
-      setTimeout(function() {
-        this.props.getJobStatusToStore(this.props.match.params.id);
-      }, 1000)
+      if (this.props.getJobStatusToStore) {
+        this.props.getJobStatusToStore(
+          this.props.match.params.id, 
+          this.props.job.progress);
+      }
 
       return {};
     }
 
-    return this.props.data;
+    return this.props.article;
   }
 
   getReadableId() {
@@ -46,6 +50,9 @@ class VisualizationScreen extends React.Component {
     return (
       <div>
         <h2>Article: {this.getReadableId()}</h2>
+        <div>
+          
+        </div>
         <Form>
           <Form.Group controlId="depth">
             <Form.Label>

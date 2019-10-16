@@ -2,12 +2,14 @@ import { combineReducers } from 'redux';
 
 import alert from './Alert';
 import loading from './Loading';
-import articleData from './ArticleData';
+import article from './Article';
+import job from './Job';
 
 const rootReducer = combineReducers({
   alert,
   loading,
-  articleData
+  article,
+  job
 });
 
 export default rootReducer;
