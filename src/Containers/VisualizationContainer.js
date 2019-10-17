@@ -80,7 +80,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         if (json.data.status === 'complete') {
           dispatch(saveArticleJob(articleName, json.data));
           getJobResult(articleName);
-        } else if (json.data.status === 'failed') {
+        } else if (json.data.status === 'faulted') {
           dispatch(saveArticleJob(articleName, json.data));
           dispatch(loadingEnd());
           dispatch(alertError("Job failed mid-operation, check server logs"));
