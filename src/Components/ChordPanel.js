@@ -4,12 +4,12 @@ import ChordSegment from './ChordSegment';
 
 import './ChordPanel.scss';
 
-const MAX_NUMBER_OF_SEGMENTS = 31;
+const MAX_NUMBER_OF_SEGMENTS = 30;
 
 class ChordPanel extends React.Component {
   renderSegment = (index, segments) => {
     return <ChordSegment 
-             key={index} index={index} data={segments} 
+             key={index + 1} index={index} data={segments} 
              onSegmentSelect={this.onSegmentSelect} />;
   }
 

@@ -9,6 +9,7 @@ const COLOR_RSTEP = 5;
 
 const RADIUS_OUTER = 500;
 const RADIUS_INNER = 455;
+const HALF_BLOCK_WIDTH = 20;
 
 class ChordSegment extends React.Component {
   getColor(index) {
@@ -56,9 +57,9 @@ class ChordSegment extends React.Component {
     }
   }
 
-  renderPath() {
-    if (!this.props.data || !this.props.index) {
-      return;
+  render() {
+    if (!this.props.data || this.props.index === undefined) {
+      return <g className="chord-segment"></g>;
     }
 
     let referencesToSegment = 0;
@@ -73,19 +74,28 @@ class ChordSegment extends React.Component {
     const segment = this.props.data[this.props.index];
     const arcLength = 2 * Math.PI * (segment.referenceCount / referencesTotal);
 
-    const startAngle = 2 * Math.PI * (referencesToSegment / referencesTotal);
-    const endAngle = startAngle + arcLength;
+    const startAngle = 360 * (referencesToSegment / referencesTotal);
+    const transform = `rotate(${startAngle} ${RADIUS_OUTER} ${RADIUS_OUTER})`;
 
-    return <path 
-      d={this.getArcPath(RADIUS_OUTER, RADIUS_OUTER, RADIUS_INNER, startAngle, endAngle)} 
-      stroke={this.getColor(this.props.index)}
-      onClick={this.handleSegmentClick} />;
-  }
+    const lineX1 = RADIUS_OUTER + RADIUS_INNER - HALF_BLOCK_WIDTH;
+    const lineX2 = RADIUS_OUTER + RADIUS_INNER + HALF_BLOCK_WIDTH;
 
-  render() {
     return (
-      <g className="chord-segment">
-        {this.renderPath()}
+      <g className="chord-segment" transform={transform}>
+        <path 
+          d={this.getArcPath(RADIUS_OUTER, RADIUS_OUTER, RADIUS_INNER + HALF_BLOCK_WIDTH, 0, arcLength)} 
+          stroke="#333"
+          onClick={this.handleSegmentClick} />
+        <path 
+          d={this.getArcPath(RADIUS_OUTER, RADIUS_OUTER, RADIUS_INNER - HALF_BLOCK_WIDTH, 0, arcLength)}
+          stroke="#333"
+          onClick={this.handleSegmentClick} />
+        <line x1={lineX1} y1={RADIUS_OUTER} x2={lineX2} y2={RADIUS_OUTER} />
+        <path 
+          d={this.getArcPath(RADIUS_OUTER, RADIUS_OUTER, RADIUS_INNER, 0, arcLength)} 
+          stroke={this.getColor(this.props.index)}
+          onClick={this.handleSegmentClick} 
+          className="block" />
       </g>
     );
   }
