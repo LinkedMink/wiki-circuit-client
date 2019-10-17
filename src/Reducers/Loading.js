@@ -2,6 +2,10 @@ import { LOADING_START, LOADING_REPORT, LOADING_END } from '../Actions/Loading';
 
 function loading(state = {}, action) {
   if (action.type === LOADING_START) {
+    if (state && state.isLoading) {
+      return state;
+    }
+
     return Object.assign({}, state, { 
       isLoading: true, 
       percentComplete: action.payload.isProgressable ? 0 : null,

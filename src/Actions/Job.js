@@ -1,8 +1,11 @@
 export const SAVE_ARTICLE_JOB = 'SAVE_ARTICLE_JOB';
 
-export function saveArticleJob(data) {
+export function saveArticleJob(articleName, data) {
   return { 
     type: SAVE_ARTICLE_JOB, 
-    payload: data
+    payload: { 
+      articleId: articleName,
+      data: data
+    }
   };
 }

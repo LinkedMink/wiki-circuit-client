@@ -1,0 +1,17 @@
+.stats-panel {
+  height: 100%;
+  border: 2px solid #111;
+
+  > div:first-child {
+    padding: 3px 15px;
+    background-color: #6c757d;
+    color: #ddd;
+    border-bottom: 2px solid #111;
+  }
+
+  p {
+    padding: 3px 0;
+    font-weight: 700;
+    border-bottom: 1px solid #222;
+  }
+}

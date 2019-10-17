@@ -1,8 +1,11 @@
 export const SAVE_ARTICLE_DATA = 'SAVE_ARTICLE_DATA';
 
-export function saveArticleData(data) {
+export function saveArticleData(articleName, data) {
   return { 
     type: SAVE_ARTICLE_DATA, 
-    payload: data
+    payload: { 
+      articleId: articleName,
+      data: data
+    }
   };
 }

@@ -9,7 +9,7 @@ import { loadingStart, loadingReport, loadingEnd } from "../Actions/Loading";
 const SERVER_BASE_URL = 'http://localhost:8080'
 const JOB_PATH = '/job'
 const RESULT_PATH = '/job/result'
-const JOB_CHECK_INTERVAL = 2000
+const JOB_CHECK_INTERVAL = 2500
 
 const MessagePrefixes = {
   NO_JOB: 'No job exist for the article:',
@@ -47,7 +47,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   const getJobResult = (articleName) => {
     const responseHandler = (json) => {
       if (json.status === 'success') {
-        dispatch(saveArticleData(json.data));
+        dispatch(saveArticleData(articleName, json.data));
       } else {
         dispatch(alertError("Failed to get job result"));
       }
@@ -69,6 +69,7 @@ function mapDispatchToProps(dispatch, ownProps) {
 
   return {
     getJobStatusToStore: (articleName, progress) => {
+      dispatch(loadingStart(true));
       dispatch(loadingReport(progress));
 
       const responseHandler = (json) => {
@@ -77,17 +78,17 @@ function mapDispatchToProps(dispatch, ownProps) {
         }
 
         if (json.data.status === 'complete') {
-          dispatch(saveArticleJob({ id: articleName, progress: 100 }));
+          dispatch(saveArticleJob(articleName, json.data));
           getJobResult(articleName);
         } else if (json.data.status === 'failed') {
-          dispatch(saveArticleJob({ id: articleName }));
+          dispatch(saveArticleJob(articleName, json.data));
           dispatch(loadingEnd());
           dispatch(alertError("Job failed mid-operation, check server logs"));
+        } else if (json.message.startsWith(MessagePrefixes.NO_JOB)) {
+          
         } else {
-          dispatch(saveArticleJob({ 
-            id: articleName,
-            progress: Math.ceil(json.data.progress * 100) 
-          }));
+          json.data.progress = Math.ceil(json.data.progress * 100);
+          dispatch(saveArticleJob(articleName, json.data));
         }
       };
     
@@ -111,12 +112,12 @@ function mapDispatchToProps(dispatch, ownProps) {
 
       const responseHandler = (json) => {
         if (json && json.status === 'success') {
-          dispatch(saveArticleJob({ id: articleName, progress: 0 }));
+          dispatch(saveArticleJob(articleName, { progress: 0 }));
         } else if (json && json.message) {
           if (json.message.startsWith(MessagePrefixes.IN_CACHE)) {
             getJobResult(articleName);
           } else if (json.message.startsWith(MessagePrefixes.JOB_STARTED)) {
-            dispatch(saveArticleJob({ id: articleName, progress: 0 }));
+            dispatch(saveArticleJob(articleName, { progress: 0 }));
           } else {
             dispatch(loadingEnd());
             dispatch(alertError(json.message));
