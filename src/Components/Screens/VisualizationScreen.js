@@ -21,24 +21,25 @@ class VisualizationScreen extends React.Component {
 
   getVisualizationData() {
     if (!this.props.article) {
-      if (!this.props.job) {
-        if (this.props.getVisualizationDataToStore) {
-          this.props.getVisualizationDataToStore(this.props.match.params.id)
-        }
-  
-        return [];
-      }
-
-      if (this.props.getJobStatusToStore) {
-        this.props.getJobStatusToStore(
-          this.props.match.params.id, 
-          this.props.job.progress);
+      if (this.props.getVisualizationDataToStore) {
+        this.props.getVisualizationDataToStore(this.props.match.params.id)
       }
 
       return [];
     }
 
-    return this.props.article;
+    if (!this.props.article.result) {
+      if (this.props.getJobStatusToStore) {
+        this.props.getJobStatusToStore(
+          this.props.match.params.id, 
+          this.props.article.progress.completed);
+      }
+
+      return [];
+    }
+
+
+    return this.props.article.result;
   }
 
   getReadableId(id) {
@@ -69,27 +70,22 @@ class VisualizationScreen extends React.Component {
       return parts;
     }
 
-    if (this.props.job) {
-      if (this.props.job.startTime) {
-        const start = new Date(this.props.job.startTime);
+    if (this.props.article) {
+      if (this.props.article.startTime) {
+        const start = new Date(this.props.article.startTime);
         parts.set('Retrieved At', start.toLocaleTimeString('en-US'));
       }
 
-      if (this.props.job.runTime) {
-        parts.set('Finished In', `${(this.props.job.runTime / 1000).toFixed(1)} s`);
+      if (this.props.article.runTime) {
+        parts.set('Finished In', `${(this.props.article.runTime / 1000).toFixed(1)} s`);
       }
 
-      if (this.props.job.totals && this.props.job.totals[0]) {
-        parts.set('Links Found', this.props.job.totals[0].links);
+      const totals = this.props.article.progress.data;
+      if (totals && totals[0]) {
+        parts.set('Links Found', totals[0].links);
+        parts.set('Unique Articles', totals[0].queued);
+        parts.set('Downloaded Articles', totals[0].downloaded);
       }
-
-      if (this.props.job.totals && this.props.job.totals[0]) {
-        parts.set('Downloaded Articles', this.props.job.totals[0].downloaded);
-      }
-    }
-
-    if (this.props.article) {
-      parts.set('Unique Articles', this.props.article.length);
     }
 
     return parts;
