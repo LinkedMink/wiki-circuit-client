@@ -16,11 +16,11 @@
   }
 
   > circle.outer-rim:hover {
-    opacity: 0.75;
+    opacity: 0.85;
   }
 
-  .highlight {
-    stroke: #eaed2b;
-    opacity: 0.75;
+  > circle.outline {
+    stroke: #d6f016;
+    stroke-width: 10;
   }
 }

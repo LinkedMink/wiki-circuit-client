@@ -4,12 +4,49 @@ import ChordSegment from './ChordSegment';
 
 import './ChordPanel.scss';
 
-const MAX_NUMBER_OF_SEGMENTS = 30;
+const DEFAULT_SEGMENT_COUNT = 30;
 
 class ChordPanel extends React.Component {
-  renderSegment = (index, segments) => {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selected: undefined
+    };
+  }
+
+  isSegmentSelected = (id) => {
+    return (this.state.selected === id)
+  }
+
+  getOutlineClass = () => {
+    if (this.state.selected === undefined) {
+      return 'outline';
+    } else {
+      return '';
+    }
+  }
+
+  onSegmentSelect = (segment, id) => {
+    if (this.props.onPartSelect) {
+      this.props.onPartSelect(segment);
+    }
+
+    this.setState({selected: id});
+  }
+
+  handleRimClick = () => {
+    if (this.props.onPartSelect) {
+      this.props.onPartSelect();
+    }
+
+    this.setState({selected: undefined});
+  }
+
+  renderSegment = (index, id, segmentMap) => {
     return <ChordSegment 
-             key={index + 1} index={index} data={segments} 
+             key={index + 1} id={id} data={segmentMap} 
+             isSelected={this.isSegmentSelected(id)}
              onSegmentSelect={this.onSegmentSelect} />;
   }
 
@@ -18,28 +55,37 @@ class ChordPanel extends React.Component {
       return;
     }
 
-    const segmentData = this.props.data.slice(0, MAX_NUMBER_OF_SEGMENTS);
-    return segmentData.map((segment, index) => this.renderSegment(index, segmentData));
+    const segmentCount = this.props.segmentCount ? this.props.segmentCount : DEFAULT_SEGMENT_COUNT;
+    const segmentData = this.props.data.slice(0, segmentCount);
+
+
+    let referencesTotal = 0;
+    segmentData.forEach((element) => {
+      referencesTotal += element.referenceCount;
+    });
+
+    let referencesToSegment = 0;
+    const segmentMap = new Map();
+    segmentData.forEach((segment, index) => {
+      segmentMap.set(segment.id, {
+        segment: segment,
+        index: index,
+        startAngle: 2 * Math.PI * (referencesToSegment / referencesTotal),
+        arcLength: 2 * Math.PI * (segment.referenceCount / referencesTotal)
+      })
+
+      referencesToSegment += segment.referenceCount;
+    });
+
+    return segmentData.map((segment, index) => this.renderSegment(index, segment.id, segmentMap));
   }
 
-  onSegmentSelect = (segment) => {
-    if (this.props.onPartSelect) {
-      this.props.onPartSelect(segment);
-    }
-  }
-
-  handleRimClick = () => {
-    if (this.props.onPartSelect) {
-      this.props.onPartSelect();
-    }
-  }
-
-  render() {
+  render = () => {
     return (
       <svg className="chord-diagram" viewBox="0 0 1000 1000">
-        <circle cx="50%" cy="50%" r="499" />
-        <circle cx="50%" cy="50%" r="481" />
-        <circle cx="50%" cy="50%" r="490" 
+        <circle cx="50%" cy="50%" r="495" className={this.getOutlineClass()} />
+        <circle cx="50%" cy="50%" r="477" className={this.getOutlineClass()} />
+        <circle cx="50%" cy="50%" r="486" 
                 className="outer-rim" onClick={this.handleRimClick} />
         {this.renderSegments()}
       </svg>

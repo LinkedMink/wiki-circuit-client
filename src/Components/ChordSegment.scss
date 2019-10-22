@@ -1,25 +1,24 @@
 .chord-segment {
   transition: 0.5s;
 
+  path {
+    fill: transparent;
+    opacity: 0.6;
+    transition: 0.25s;
+  }
+
   path.block {
     cursor: pointer;
     stroke-width: 40;
   }
 
-  path {
-    stroke-width: 2;
-    fill: transparent;
-    opacity: 0.6;
-    transition: 0.25s;
+  path.block:hover {
+    opacity: 0.85;
   }
 
   line {
     stroke-width: 2;
     stroke: #333;
     opacity: 0.6;
-  }
-
-  path:hover {
-    opacity: 0.8;
   }
 }

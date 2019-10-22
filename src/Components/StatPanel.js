@@ -1,10 +1,11 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import './StatPanel.scss';
 
 class StatPanel extends React.Component {
-  renderStats() {
+  renderStats = () => {
     const output = [];
 
     if (this.props.data) {
@@ -16,14 +17,21 @@ class StatPanel extends React.Component {
     return output;
   }
 
-  render() {
+  render = () => {
     return (
       <Col className="stats-panel">
         <Row>
           <h4>Stats and Info</h4>
         </Row>
         <div>
-          {this.renderStats()}
+          <ReactCSSTransitionGroup
+            transitionName="fade"
+            transitionAppear={true}
+            transitionAppearTimeout={300}
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}>
+            {this.renderStats()}
+          </ReactCSSTransitionGroup>
         </div>
       </Col>
     );

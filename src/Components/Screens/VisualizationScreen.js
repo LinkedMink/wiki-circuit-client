@@ -1,10 +1,14 @@
 import React from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
 
+import RangeSelector from '../RangeSelector';
 import ChordPanel from '../ChordPanel';
 import StatPanel from '../StatPanel';
 
 import './VisualizationScreen.scss';
+
+const MIN_SEGMENTS_SELECTABLE = 10;
+const MAX_SEGMENTS_SELECTABLE = 50;
 
 class VisualizationScreen extends React.Component {
   constructor(props) {
@@ -15,11 +19,9 @@ class VisualizationScreen extends React.Component {
       segmentCount: 30,
       selected: undefined
     };
-
-    this.handleChange  = this.handleChange.bind(this);
   }
 
-  getVisualizationData() {
+  getVisualizationData = () => {
     if (!this.props.article) {
       if (this.props.getVisualizationDataToStore) {
         this.props.getVisualizationDataToStore(this.props.match.params.id)
@@ -42,15 +44,11 @@ class VisualizationScreen extends React.Component {
     return this.props.article.result;
   }
 
-  getReadableId(id) {
+  getReadableId = (id) => {
     return id.replace(/_/g, ' ');
   }
 
-  handleChange(event) {
-    this.setState({[event.target.id]: event.target.value});
-  }
-
-  getStatData() {
+  getStatData = () => {
     const parts = new Map();
 
     if (this.state.selected) {
@@ -59,7 +57,7 @@ class VisualizationScreen extends React.Component {
       
       let uniqueLinks = 0
       let totalLinks = 0
-      for (const [key, value] of Object.entries(this.state.selected.linkedArticles)) {
+      for (const [, value] of Object.entries(this.state.selected.linkedArticles)) {
         totalLinks += value;
         uniqueLinks++;
       }
@@ -91,48 +89,54 @@ class VisualizationScreen extends React.Component {
     return parts;
   }
 
-  getMinSegmentCount() {
+  getMinSegmentCount = () => {
+    if (this.props.article && this.props.article.result && 
+        this.props.article.result.length < MIN_SEGMENTS_SELECTABLE) {
+      return this.props.article.result.length;
+    }
 
+    return MIN_SEGMENTS_SELECTABLE;
   }
 
-  getMaxSegmentCount() {
+  getMaxSegmentCount = () => {
+    if (this.props.article && this.props.article.result && 
+        this.props.article.result.length < MAX_SEGMENTS_SELECTABLE) {
+    return this.props.article.result.length;
+    }
 
+    return MAX_SEGMENTS_SELECTABLE;
   }
 
   onPartSelect = (part) => {
     this.setState({selected: part});
   }
 
-  render() {
+  onSegmentCountChange = (value) => {
+    this.setState({segmentCount: value});
+  }
+
+  render = () => {
     return (
       <div>
         <h2>Article: {this.getReadableId(this.props.match.params.id)}</h2>
         <Form>
-          <Form.Group className="range-selector" controlId="segmentCount">
-            <Form.Label>
-              Segments
-            </Form.Label>
-            <Row>
-              <Col xs="12" sm="8" md="6">
-                <Form.Control type="range" 
-                              min="20"
-                              max="40"
-                              step="1"
-                              value={this.state.segmentCount} 
-                              onChange={this.handleChange} 
-                              required />
-              </Col>
-            </Row>
-            <Row>
-              <Col xs="4" sm="3" md="2" className="text-left">20</Col>
-              <Col xs="4" sm="3" md="2" className="text-center"></Col>
-              <Col xs="4" sm="3" md="2" className="text-right">40</Col>
-            </Row>
-          </Form.Group>
+          <Row>
+            <Col xs="12" sm="10" md="8" lg="6" xl="4">
+              <RangeSelector 
+                label="Segments"
+                tooltip="Number of article blocks to show"
+                min={this.getMinSegmentCount()} 
+                max={this.getMaxSegmentCount()}
+                onValueChange={this.onSegmentCountChange} />
+            </Col>
+          </Row>
         </Form>
         <Row className="chord-panel">
           <Col xs="12" sm="8">
-            <ChordPanel data={this.getVisualizationData()} onPartSelect={this.onPartSelect} />
+            <ChordPanel 
+              data={this.getVisualizationData()}
+              segmentCount={this.state.segmentCount} 
+              onPartSelect={this.onPartSelect} />
           </Col>
           <Col xs="12" sm="4">
             <StatPanel data={this.getStatData()} />
