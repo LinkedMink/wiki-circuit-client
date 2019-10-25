@@ -16,3 +16,7 @@ export function polarToCartesian(centerX, centerY, radius, angle) {
 export function radiansToDegrees(radians) {
   return 180 / Math.PI * radians;
 }
+
+export function ratioToRadians(proportion) {
+  return 2 * Math.PI * proportion;
+}

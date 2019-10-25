@@ -2,20 +2,20 @@ import React from 'react';
 
 import { polarToCartesian } from '../Helpers/Math';
 
-import './ChordLine.scss';
+import './ChordLines.scss';
 
 const STROKE_WIDTH_MULTIPLER = 1;
 const HALF_VIEWPORT = 500;
 const RADIUS = 431;
 
-class ChordLine extends React.Component {
-  getPath = () => {
-    if (!this.props.segmentMap || !this.props.segmentId || !this.props.targetId) {
+class ChordLines extends React.Component {
+  getPath = (targetId) => {
+    if (!this.props.segmentMap || !this.props.segmentId) {
       return '';
     }
 
     const source = this.props.segmentMap.get(this.props.segmentId);
-    const target = this.props.segmentMap.get(this.props.targetId);
+    const target = this.props.segmentMap.get(targetId);
 
     // Already applying a rotation from ChordSegement, find the diff between the two segments
     const sourceAngle = source.arcLength / 2;
@@ -26,13 +26,13 @@ class ChordLine extends React.Component {
     return `M ${sourceXY.x} ${sourceXY.y} Q ${HALF_VIEWPORT} ${HALF_VIEWPORT}, ${targetXY.x} ${targetXY.y}`;
   }
 
-  getStrokeWidth = () => {
-    if (!this.props.segmentMap || !this.props.segmentId || !this.props.targetId) {
+  getStrokeWidth = (targetId) => {
+    if (!this.props.segmentMap || !this.props.segmentId) {
       return STROKE_WIDTH_MULTIPLER;
     }
 
     const segment = this.props.segmentMap.get(this.props.segmentId).segment;
-    const referenceCount = segment.linkedArticles[this.props.targetId];
+    const referenceCount = segment.linkedArticles[targetId];
     return referenceCount * STROKE_WIDTH_MULTIPLER;
   }
 
@@ -44,16 +44,30 @@ class ChordLine extends React.Component {
     return this.props.color;
   }
 
+  renderPath = (targetId) => {
+    return (<path 
+      d={this.getPath(targetId)} 
+      stroke={this.getColor()} 
+      strokeWidth={this.getStrokeWidth(targetId)} />);
+  }
+
+  renderPaths = () => {
+    if (!this.props.targetIds) {
+      return [];
+    }
+    
+    return this.props.targetIds.map((targetId) => {
+      return this.renderPath(targetId);
+    });
+  }
+
   render = () => {
     return (
       <g className="chord-line">
-        <path 
-          d={this.getPath()} 
-          stroke={this.getColor()} 
-          strokeWidth={this.getStrokeWidth()} />
+        {this.renderPaths()}
       </g>
     );
   }
 }
 
-export default ChordLine;
+export default ChordLines;

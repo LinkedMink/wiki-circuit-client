@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Wiki Circuit",
+  "name": "Wiki Circuit: Article Connectivity Analyzer",
   "icons": [
     {
       "src": "favicon.ico",

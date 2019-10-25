@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ChordSegment from './ChordSegment';
+import { ratioToRadians } from '../Helpers/Math';
 
 import './ChordPanel.scss';
 
@@ -70,8 +71,8 @@ class ChordPanel extends React.Component {
       segmentMap.set(segment.id, {
         segment: segment,
         index: index,
-        startAngle: 2 * Math.PI * (referencesToSegment / referencesTotal),
-        arcLength: 2 * Math.PI * (segment.referenceCount / referencesTotal)
+        startAngle: ratioToRadians(referencesToSegment / referencesTotal),
+        arcLength: ratioToRadians(segment.referenceCount / referencesTotal)
       })
 
       referencesToSegment += segment.referenceCount;

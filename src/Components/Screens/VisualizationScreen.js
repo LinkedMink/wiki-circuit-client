@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
 
-import RangeSelector from '../RangeSelector';
+import RangeSelector from '../Controls/RangeSelector';
 import ChordPanel from '../ChordPanel';
 import StatPanel from '../StatPanel';
 
@@ -43,7 +43,6 @@ class VisualizationScreen extends React.Component {
 
       return [];
     }
-
 
     return this.props.article.result;
   }

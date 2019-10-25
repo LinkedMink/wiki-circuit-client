@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ChordLine from './ChordLine';
+import ChordLines from './ChordLines';
 import { polarToCartesian, radiansToDegrees } from '../Helpers/Math';
 
 import './ChordSegment.scss';
@@ -54,32 +54,11 @@ class ChordSegment extends React.Component {
     return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`;
   }
 
-
-
   handleSegmentClick = (event) => {
     const segment = this.props.data.get(this.props.id).segment;
     if (this.props.onSegmentSelect) {
       this.props.onSegmentSelect(segment, this.props.id);
     }
-  }
-
-  renderLines = (color) => {
-    const output = [];
-
-    const segment = this.props.data.get(this.props.id).segment;
-    Object.keys(segment.linkedArticles).forEach((article, index) => {
-      if (this.props.data.has(article)) {
-        output.push(<ChordLine 
-          key={index + 1}
-          segmentId={this.props.id} 
-          segmentMap={this.props.data}
-          targetId={article}
-          color={color}
-          isSelected={this.props.isSelected} />)
-      }
-    });
-
-    return output;
   }
 
   render = () => {
@@ -96,9 +75,19 @@ class ChordSegment extends React.Component {
     const lineX2 = RADIUS_OUTER + RADIUS_INNER + HALF_BLOCK_WIDTH;
 
     const color = this.getColor(segmentData.index);
-    
+
+    const targetIds = Object.keys(segmentData.segment.linkedArticles).filter((article) => {
+      return this.props.data.has(article)
+    });
+
     return (
       <g className="chord-segment" transform={transform}>
+        <ChordLines 
+          segmentId={this.props.id} 
+          segmentMap={this.props.data}
+          targetIds={targetIds}
+          color={color}
+          isSelected={this.props.isSelected} />
         <path 
           d={this.getArcPath(RADIUS_OUTER, RADIUS_OUTER, RADIUS_INNER + HALF_BLOCK_WIDTH, 0, arcLength)} 
           style={this.getSelectedStyle()}
@@ -113,7 +102,6 @@ class ChordSegment extends React.Component {
           stroke={color}
           onClick={this.handleSegmentClick} 
           className="block" />
-        {this.renderLines(color)}
       </g>
     );
   }
