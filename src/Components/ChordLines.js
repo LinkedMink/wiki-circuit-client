@@ -49,6 +49,7 @@ class ChordLines extends React.Component {
 
   renderPath = (targetId, index) => {
     return (<path 
+      key={index + 1}
       d={this.getPath(targetId, index)} 
       stroke={this.getColor()} 
       strokeWidth={this.getStrokeWidth(targetId)} />);

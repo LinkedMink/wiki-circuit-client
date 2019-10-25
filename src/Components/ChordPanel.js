@@ -12,8 +12,7 @@ class ChordPanel extends React.Component {
     super(props);
 
     this.state = {
-      selected: undefined,
-      segmentMap: null
+      selected: undefined
     };
   }
 
@@ -31,7 +30,15 @@ class ChordPanel extends React.Component {
 
   onSegmentSelect = (segment, id) => {
     if (this.props.onPartSelect) {
-      this.props.onPartSelect(segment);
+      const visibleLinks = {};
+      const articles = this.segmentMap.get(id).segment.linkedArticles;
+      Object.keys(articles).forEach((article) => {
+        if (this.segmentMap.has(article)) {
+          visibleLinks[article] = articles[article];
+        }
+      })
+
+      this.props.onPartSelect(segment, visibleLinks);
     }
 
     this.setState({selected: id});
@@ -58,17 +65,17 @@ class ChordPanel extends React.Component {
     }
 
     const segmentCount = this.props.segmentCount ? this.props.segmentCount : DEFAULT_SEGMENT_COUNT;
-    const segmentData = this.props.data.slice(0, segmentCount);
+    this.segmentData = this.props.data.slice(0, segmentCount);
 
     let referencesTotal = 0;
-    segmentData.forEach((element) => {
+    this.segmentData.forEach((element) => {
       referencesTotal += element.referenceCount;
     });
 
     let referencesToSegment = 0;
-    const segmentMap = new Map();
-    segmentData.forEach((segment, index) => {
-      segmentMap.set(segment.id, {
+    this.segmentMap = new Map();
+    this.segmentData.forEach((segment, index) => {
+      this.segmentMap.set(segment.id, {
         segment: segment,
         index: index,
         startAngle: ratioToRadians(referencesToSegment / referencesTotal),
@@ -78,7 +85,7 @@ class ChordPanel extends React.Component {
       referencesToSegment += segment.referenceCount;
     });
 
-    return segmentData.map((segment, index) => this.renderSegment(index, segment.id, segmentMap));
+    return this.segmentData.map((segment, index) => this.renderSegment(index, segment.id, this.segmentMap));
   }
 
   render = () => {

@@ -2,14 +2,14 @@ import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-import './ControlPanel.scss';
+import './SidePanel.scss';
 
-class ControlPanel extends React.Component {
+class SidePanel extends React.Component {
   render = () => {
     return (
-      <Col className="control-panel">
+      <Col className="side-panel">
         <Row>
-          <h4>Controls</h4>
+          <h4>{this.props.label}</h4>
         </Row>
         <div>
           {this.props.children}
@@ -19,4 +19,4 @@ class ControlPanel extends React.Component {
   }
 }
 
-export default ControlPanel;
+export default SidePanel;

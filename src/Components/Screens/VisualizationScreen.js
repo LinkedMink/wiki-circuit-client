@@ -3,6 +3,7 @@ import { Row, Col, Form } from 'react-bootstrap';
 
 import RangeSelector from '../Controls/RangeSelector';
 import ChordPanel from '../ChordPanel';
+import SidePanel from '../SidePanel';
 import StatPanel from '../StatPanel';
 
 import './VisualizationScreen.scss';
@@ -17,7 +18,8 @@ class VisualizationScreen extends React.Component {
     this.state = {
       depth: 1,
       segmentCount: 30,
-      selected: undefined
+      selected: undefined,
+      visibleLinks: undefined
     };
   }
 
@@ -92,6 +94,18 @@ class VisualizationScreen extends React.Component {
     return parts;
   }
 
+  getVisibleLinks = () => {
+    const parts = new Map();
+
+    if (this.state.visibleLinks) {
+      for (const [index, value] of Object.entries(this.state.visibleLinks)) {
+        parts.set(this.getReadableId(index), value);
+      }
+    }
+
+    return parts;
+  }
+
   getMinSegmentCount = () => {
     if (this.props.article && this.props.article.result && 
         this.props.article.result.length < MIN_SEGMENTS_SELECTABLE) {
@@ -104,14 +118,15 @@ class VisualizationScreen extends React.Component {
   getMaxSegmentCount = () => {
     if (this.props.article && this.props.article.result && 
         this.props.article.result.length < MAX_SEGMENTS_SELECTABLE) {
-    return this.props.article.result.length;
+      return this.props.article.result.length;
     }
 
     return MAX_SEGMENTS_SELECTABLE;
   }
 
-  onPartSelect = (part) => {
+  onPartSelect = (part, visibleLinks) => {
     this.setState({selected: part});
+    this.setState({visibleLinks: visibleLinks});
   }
 
   onSegmentCountChange = (value) => {
@@ -122,18 +137,6 @@ class VisualizationScreen extends React.Component {
     return (
       <div>
         <h2>Article: {this.getReadableId(this.props.match.params.id)}</h2>
-        <Form>
-          <Row>
-            <Col xs="12" sm="10" md="8" lg="6" xl="4">
-              <RangeSelector 
-                label="Segments"
-                tooltip="Number of article blocks to show"
-                min={this.getMinSegmentCount()} 
-                max={this.getMaxSegmentCount()}
-                onValueChange={this.onSegmentCountChange} />
-            </Col>
-          </Row>
-        </Form>
         <Row className="chord-panel">
           <Col xs="12" sm="8">
             <ChordPanel 
@@ -142,7 +145,16 @@ class VisualizationScreen extends React.Component {
               onPartSelect={this.onPartSelect} />
           </Col>
           <Col xs="12" sm="4">
+            <SidePanel label="Controls">
+              <RangeSelector 
+                label="Segments"
+                tooltip="Number of article blocks to show"
+                min={this.getMinSegmentCount()} 
+                max={this.getMaxSegmentCount()}
+                onValueChange={this.onSegmentCountChange} />
+            </SidePanel>
             <StatPanel data={this.getStatData()} />
+            <StatPanel data={this.getVisibleLinks()} label="Visible Links" />
           </Col>
         </Row>
       </div>

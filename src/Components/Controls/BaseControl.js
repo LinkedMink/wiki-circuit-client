@@ -19,7 +19,11 @@ class BaseControl extends React.Component {
     }
   }
 
-  get value() {
+  get formKey() {
+
+  }
+
+  get formValue() {
     
   }
 }

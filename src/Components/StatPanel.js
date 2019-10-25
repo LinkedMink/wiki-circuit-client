@@ -32,7 +32,7 @@ class StatPanel extends React.Component {
     return (
       <Col className="stats-panel">
         <Row>
-          <h4>Stats and Info</h4>
+          <h4>{this.props.label ? this.props.label : 'Stats and Info'}</h4>
         </Row>
         <div>
           <ReactCSSTransitionGroup
