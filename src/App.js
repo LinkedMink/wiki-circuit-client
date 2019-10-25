@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import { Container, Row, Col } from 'react-bootstrap';
 
 import './App.scss';
@@ -25,10 +25,12 @@ class App extends React.Component {
               <NavigationMenuContainer />
             </Col>
             <Col xs="12" sm="12" md="10">
-              <Redirect from="/" to="/home" />
-              <Route exact path="/home" component={HomeScreen} />
-              <Route exact path="/visualization/:id" component={VisualizationContainer} />
-              <Route exact path="/about" component={AboutScreen} />
+              <Switch>
+                <Route exact path="/home" component={HomeScreen} />
+                <Route exact path="/visualization/:id" component={VisualizationContainer} />
+                <Route exact path="/about" component={AboutScreen} />
+                <Redirect from="/" to="/home" />
+              </Switch>
             </Col>
           </Row>
         </Container>

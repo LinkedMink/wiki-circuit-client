@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ChordLine from './ChordLine';
+import { polarToCartesian, radiansToDegrees } from '../Helpers/Math';
 
 import './ChordSegment.scss';
 
@@ -45,20 +46,15 @@ class ChordSegment extends React.Component {
   }
 
   getArcPath = (x, y, radius, startAngle, endAngle) => {
-    var start = this.polarToCartesian(x, y, radius, endAngle);
-    var end = this.polarToCartesian(x, y, radius, startAngle);
+    var start = polarToCartesian(x, y, radius, endAngle);
+    var end = polarToCartesian(x, y, radius, startAngle);
 
     var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
     return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`;
   }
 
-  polarToCartesian = (centerX, centerY, radius, angle) => {
-    return {
-      x: centerX + (radius * Math.cos(angle)),
-      y: centerY + (radius * Math.sin(angle))
-    };
-  }
+
 
   handleSegmentClick = (event) => {
     const segment = this.props.data.get(this.props.id).segment;
@@ -76,10 +72,10 @@ class ChordSegment extends React.Component {
         output.push(<ChordLine 
           key={index + 1}
           segmentId={this.props.id} 
-          color={color} 
           segmentMap={this.props.data}
-          target={article}
-          thickness={segment.linkedArticles[article]} />)
+          targetId={article}
+          color={color}
+          isSelected={this.props.isSelected} />)
       }
     });
 
@@ -93,7 +89,7 @@ class ChordSegment extends React.Component {
 
     const segmentData = this.props.data.get(this.props.id);
     const arcLength = segmentData.arcLength;
-    const startAngle = 180 / Math.PI * segmentData.startAngle;
+    const startAngle = radiansToDegrees(segmentData.startAngle);
     const transform = `rotate(${startAngle} ${RADIUS_OUTER} ${RADIUS_OUTER})`;
 
     const lineX1 = RADIUS_OUTER + RADIUS_INNER - HALF_BLOCK_WIDTH;

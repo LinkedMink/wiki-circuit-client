@@ -24,13 +24,17 @@ class VisualizationScreen extends React.Component {
   getVisualizationData = () => {
     if (!this.props.article) {
       if (this.props.getVisualizationDataToStore) {
-        this.props.getVisualizationDataToStore(this.props.match.params.id)
+        this.props.getVisualizationDataToStore(this.props.match.params.id);
       }
 
       return [];
     }
 
     if (!this.props.article.result) {
+      if (this.props.article.status === 'faulted') {
+        return [];
+      }
+
       if (this.props.getJobStatusToStore) {
         this.props.getJobStatusToStore(
           this.props.match.params.id, 
