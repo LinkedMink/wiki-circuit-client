@@ -60,7 +60,7 @@ class VisualizationScreen extends React.Component {
       
       let uniqueLinks = 0
       let totalLinks = 0
-      for (const [, value] of Object.entries(this.state.selected.linkedArticles)) {
+      for (const [index, value] of Object.entries(this.state.selected.linkedArticles)) {
         totalLinks += value;
         uniqueLinks++;
       }

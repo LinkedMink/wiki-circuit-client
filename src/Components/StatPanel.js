@@ -5,16 +5,27 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './StatPanel.scss';
 
 class StatPanel extends React.Component {
-  renderStats = () => {
+  getListFromMap = (map) => {
     const output = [];
 
-    if (this.props.data) {
-      for (const entry of this.props.data.entries()) {
-        output.push(<p key={entry[0]}>{entry[0]}: {entry[1]}</p>);
+    for (const entry of map) {
+      if (entry[1].entries) {
+        const subList = this.getListFromMap(entry[1]);
+        output.push(<li key={entry[0]}>{entry[0]}: {subList}</li>);
+      } else {
+        output.push(<li key={entry[0]}>{entry[0]}: {entry[1]}</li>);
       }
     }
 
     return output;
+  }
+
+  renderStats = () => {
+    if (this.props.data) {
+      return this.getListFromMap(this.props.data);
+    }
+
+    return [];
   }
 
   render = () => {
@@ -30,7 +41,9 @@ class StatPanel extends React.Component {
             transitionAppearTimeout={300}
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
-            {this.renderStats()}
+            <ul>
+              {this.renderStats()}
+            </ul>
           </ReactCSSTransitionGroup>
         </div>
       </Col>

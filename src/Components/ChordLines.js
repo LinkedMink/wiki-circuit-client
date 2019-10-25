@@ -4,12 +4,12 @@ import { polarToCartesian } from '../Helpers/Math';
 
 import './ChordLines.scss';
 
-const STROKE_WIDTH_MULTIPLER = 1;
+const STROKE_WIDTH_MULTIPLER = 2;
 const HALF_VIEWPORT = 500;
 const RADIUS = 431;
 
 class ChordLines extends React.Component {
-  getPath = (targetId) => {
+  getPath = (targetId, index) => {
     if (!this.props.segmentMap || !this.props.segmentId) {
       return '';
     }
@@ -17,9 +17,12 @@ class ChordLines extends React.Component {
     const source = this.props.segmentMap.get(this.props.segmentId);
     const target = this.props.segmentMap.get(targetId);
 
+    const halfSourceArcDivision = source.arcLength / this.props.targetIds.length / 2;
+    const targetArcDivision = (index + 1) / (this.props.targetIds.length + 1);
+
     // Already applying a rotation from ChordSegement, find the diff between the two segments
-    const sourceAngle = source.arcLength / 2;
-    const targetAngle = target.startAngle - source.startAngle + (target.arcLength / 2);
+    const sourceAngle = source.arcLength * (index / this.props.targetIds.length) + halfSourceArcDivision;
+    const targetAngle = target.startAngle - source.startAngle + (target.arcLength * targetArcDivision);
     const sourceXY = polarToCartesian(HALF_VIEWPORT, HALF_VIEWPORT, RADIUS, sourceAngle);
     const targetXY = polarToCartesian(HALF_VIEWPORT, HALF_VIEWPORT, RADIUS, targetAngle);
 
@@ -38,15 +41,15 @@ class ChordLines extends React.Component {
 
   getColor = () => {
     if (this.props.isSelected) {
-      return '#d6f016';
+      return '#f0fc03';
     }
 
     return this.props.color;
   }
 
-  renderPath = (targetId) => {
+  renderPath = (targetId, index) => {
     return (<path 
-      d={this.getPath(targetId)} 
+      d={this.getPath(targetId, index)} 
       stroke={this.getColor()} 
       strokeWidth={this.getStrokeWidth(targetId)} />);
   }
@@ -56,8 +59,8 @@ class ChordLines extends React.Component {
       return [];
     }
     
-    return this.props.targetIds.map((targetId) => {
-      return this.renderPath(targetId);
+    return this.props.targetIds.map((targetId, index) => {
+      return this.renderPath(targetId, index);
     });
   }
 

@@ -17,7 +17,7 @@ const HALF_BLOCK_WIDTH = 20;
 class ChordSegment extends React.Component {
   getSelectedStyle = () => {
     if (this.props.isSelected) {
-      return { stroke: '#d6f016', strokeWidth: 10 };
+      return { stroke: '#f0fc03', strokeWidth: 10 };
     } else {
       return { stroke: '#333', strokeWidth: 2 };
     }

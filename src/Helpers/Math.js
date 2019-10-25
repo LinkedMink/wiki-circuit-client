@@ -6,6 +6,10 @@ export function average(...args) {
   return sum(args) / args.length;
 }
 
+export function randomNumber(start, end) {
+  return Math.floor(Math.random() * (end - start)) + start;
+}
+
 export function polarToCartesian(centerX, centerY, radius, angle) {
   return {
     x: centerX + (radius * Math.cos(angle)),

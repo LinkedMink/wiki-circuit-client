@@ -1,6 +1,6 @@
 import React from 'react';
 
-class BaseControl extends React.Component {
+class Form extends React.Component {
   constructor(props) {
     super(props);
 
@@ -12,16 +12,6 @@ class BaseControl extends React.Component {
     controlIdIncrement++;
   }
 
-  handleChange = (event) => {
-    this.setState({selectedValue: event.target.value});
-    if (this.props.onValueChange) {
-      this.props.onValueChange(event.target.value);
-    }
-  }
-
-  get value() {
-    
-  }
 }
 
 export default BaseControl;

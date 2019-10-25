@@ -1,0 +1,12 @@
+.stats-panel {
+  height: 100%;
+  border: 1px solid #333;
+
+  > div:first-child {
+    padding: 3px 15px;
+    background-color: #6c757d;
+    color: #ddd;
+    border-bottom: 1px solid #333;
+  }
+
+}

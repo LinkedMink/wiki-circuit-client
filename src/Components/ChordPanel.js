@@ -12,7 +12,8 @@ class ChordPanel extends React.Component {
     super(props);
 
     this.state = {
-      selected: undefined
+      selected: undefined,
+      segmentMap: null
     };
   }
 
@@ -59,7 +60,6 @@ class ChordPanel extends React.Component {
     const segmentCount = this.props.segmentCount ? this.props.segmentCount : DEFAULT_SEGMENT_COUNT;
     const segmentData = this.props.data.slice(0, segmentCount);
 
-
     let referencesTotal = 0;
     segmentData.forEach((element) => {
       referencesTotal += element.referenceCount;
@@ -73,7 +73,7 @@ class ChordPanel extends React.Component {
         index: index,
         startAngle: ratioToRadians(referencesToSegment / referencesTotal),
         arcLength: ratioToRadians(segment.referenceCount / referencesTotal)
-      })
+      });
 
       referencesToSegment += segment.referenceCount;
     });
