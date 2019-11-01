@@ -4,16 +4,11 @@ import VisualizationScreen from "../Components/Screens/VisualizationScreen";
 import { saveArticleData } from "../Actions/Article";
 import { alertError } from "../Actions/Alert";
 import { loadingStart, loadingReport, loadingEnd } from "../Actions/Loading";
+import { JobStatus, MessagePrefixes } from "../Constants/Message";
 
-const SERVER_BASE_URL = 'http://localhost:8080'
-const JOB_PATH = '/article'
-const JOB_CHECK_INTERVAL = 2500
-
-const MessagePrefixes = {
-  NO_JOB: 'No job exist for the specified ID:',
-  IN_CACHE: 'Job already completed and cached:',
-  JOB_STARTED: 'Job already started:'
-};
+const SERVER_BASE_URL = 'http://localhost:8080';
+const JOB_PATH = '/article';
+const JOB_CHECK_INTERVAL = 3000;
 
 function getHeaders() {
   return { 
@@ -49,10 +44,10 @@ function mapDispatchToProps(dispatch, ownProps) {
           return;
         }
 
-        if (json.data.status === 'complete') {
+        if (json.data.status === JobStatus.COMPLETE) {
           dispatch(saveArticleData(articleName, json.data));
           dispatch(loadingEnd());
-        } else if (json.data.status === 'faulted') {
+        } else if (json.data.status === JobStatus.FAULTED) {
           dispatch(saveArticleData(articleName, json.data));
           dispatch(loadingEnd());
           dispatch(alertError("Job failed mid-operation, check server logs"));

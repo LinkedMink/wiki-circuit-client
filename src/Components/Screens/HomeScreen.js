@@ -21,7 +21,8 @@ class HomeScreen extends React.Component {
     event.preventDefault();
 
     if (this.props.history) {
-      const route = `/visualization/${this.state.articleName.replace(' ', '_')}`;
+      const encoded = encodeURIComponent(this.state.articleName.replace(' ', '_'));
+      const route = `/visualization/${encoded}`;
       this.props.history.push(route);
     }
   }

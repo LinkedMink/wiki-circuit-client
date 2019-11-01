@@ -50,7 +50,7 @@ class VisualizationScreen extends React.Component {
   }
 
   getReadableId = (id) => {
-    return id.replace(/_/g, ' ');
+    return decodeURIComponent(id.replace(/_/g, ' '));
   }
 
   getStatData = () => {
@@ -60,9 +60,9 @@ class VisualizationScreen extends React.Component {
       parts.set('Article ID', this.getReadableId(this.state.selected.id));
       parts.set('Referenced', this.state.selected.referenceCount);
       
-      let uniqueLinks = 0
-      let totalLinks = 0
-      for (const [index, value] of Object.entries(this.state.selected.linkedArticles)) {
+      let uniqueLinks = 0;
+      let totalLinks = 0;
+      for (const [, value] of Object.entries(this.state.selected.linkedArticles)) {
         totalLinks += value;
         uniqueLinks++;
       }
@@ -84,10 +84,11 @@ class VisualizationScreen extends React.Component {
       }
 
       const totals = this.props.article.progress.data;
-      if (totals && totals[0]) {
-        parts.set('Links Found', totals[0].links);
-        parts.set('Unique Articles', totals[0].queued);
-        parts.set('Downloaded Articles', totals[0].downloaded);
+      if (totals) {
+        const allTotals = totals['0'];
+        parts.set('Links Found', allTotals.links);
+        parts.set('Unique Articles', allTotals.queued);
+        parts.set('Downloaded Articles', allTotals.downloaded);
       }
     }
 
