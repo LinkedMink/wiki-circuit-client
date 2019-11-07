@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Form } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 
 import RangeSelector from '../Controls/RangeSelector';
 import ChordPanel from '../ChordPanel';
@@ -145,7 +145,7 @@ class VisualizationScreen extends React.Component {
               segmentCount={this.state.segmentCount} 
               onPartSelect={this.onPartSelect} />
           </Col>
-          <Col xs="12" sm="4">
+          <Col className="info-panel" xs="12" sm="4">
             <SidePanel label="Controls">
               <RangeSelector 
                 label="Segments"

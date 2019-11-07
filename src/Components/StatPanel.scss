@@ -1,11 +1,20 @@
 .stats-panel {
   border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
 
   > div:first-child {
+    flex: 0 0 auto;
     padding: 3px 15px;
     background-color: #6c757d;
     color: #ddd;
     border-bottom: 1px solid #333;
+  }
+
+  > div:last-child {
+    flex: 1 1 auto;
+    overflow: auto;
   }
 
   ul {

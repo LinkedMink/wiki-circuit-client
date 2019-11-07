@@ -7,12 +7,27 @@
   border-top: 1px solid #343a40;
   border-bottom: 1px solid #343a40;
   padding: 10px 0;
+  height: calc(100% - 46px);
 
   > div:first-child {
     text-align: center;
   }
 }
 
-.range-selector {
-  font-weight: 700;
+.info-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+
+  > div:nth-child(1) {
+    flex: 0 0 auto
+  }
+
+  > div:nth-child(2) {
+    flex: 0 0 auto
+  }
+
+  > div:nth-child(3) {
+    flex: 1 1 auto
+  }
 }

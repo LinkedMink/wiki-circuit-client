@@ -11,6 +11,11 @@
     > div:last-child {
       height: 100%;
       border-top: 1px solid #111;
+      overflow: hidden;
+
+      > div {
+        height: 100%;
+      }
     }
   }
 }
