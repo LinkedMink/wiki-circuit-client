@@ -26,7 +26,7 @@ is downloaded. The downloaded data is then used a generate the chord visualizati
 the user to control the visualization and interact with it to get more information.
 
 ### Screenshot
-![alt text](https://raw.githubusercontent.com/LinkedMink/wiki-circuit-client/master/screenshot.png)
+![UI Screenshot](https://github.com/LinkedMink/wiki-circuit-client/raw/master/screenshot.png)
 
 ## Available Scripts
 
