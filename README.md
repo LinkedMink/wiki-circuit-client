@@ -25,6 +25,9 @@ a job on the server with the client tracking the progress of the specified job. 
 is downloaded. The downloaded data is then used a generate the chord visualization. An evolving array of controls allows
 the user to control the visualization and interact with it to get more information.
 
+### Screenshot
+![alt text](https://raw.githubusercontent.com/LinkedMink/wiki-circuit-client/master/screenshot.png)
+
 ## Available Scripts
 
 In the project directory, you can run:
