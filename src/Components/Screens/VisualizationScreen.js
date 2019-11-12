@@ -84,7 +84,7 @@ class VisualizationScreen extends React.Component {
       }
 
       const totals = this.props.article.progress.data;
-      if (totals) {
+      if (totals && totals['0']) {
         const allTotals = totals['0'];
         parts.set('Links Found', allTotals.links);
         parts.set('Unique Articles', allTotals.queued);

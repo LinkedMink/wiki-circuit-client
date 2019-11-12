@@ -5,6 +5,8 @@ import { polarToCartesian, radiansToDegrees } from '../Helpers/Math';
 
 import './ChordSegment.scss';
 
+const SEGMENT_ID_PREFIX = 'segment';
+
 const COLOR_TRIADIC_R = 27;
 const COLOR_TRIADIC_G = 0;
 const COLOR_TRIADIC_B = 199;
@@ -81,7 +83,7 @@ class ChordSegment extends React.Component {
     });
 
     return (
-      <g className="chord-segment" transform={transform}>
+      <g id={`${SEGMENT_ID_PREFIX}${this.props.id}`} className="chord-segment" transform={transform}>
         <ChordLines 
           segmentId={this.props.id} 
           segmentMap={this.props.data}

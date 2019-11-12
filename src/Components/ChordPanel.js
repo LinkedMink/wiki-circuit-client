@@ -5,14 +5,20 @@ import { ratioToRadians } from '../Helpers/Math';
 
 import './ChordPanel.scss';
 
+const SEGMENT_ID_PREFIX = 'segment';
 const DEFAULT_SEGMENT_COUNT = 30;
+const DIAGRAM_PADDING = 40;
 
 class ChordPanel extends React.Component {
+  containerElement = React.createRef();
+
   constructor(props) {
     super(props);
 
     this.state = {
-      selected: undefined
+      selected: undefined,
+      width: undefined,
+      height: undefined
     };
   }
 
@@ -26,6 +32,29 @@ class ChordPanel extends React.Component {
     } else {
       return '';
     }
+  }
+
+  getStyle = () => {
+    return { 
+      width: this.state.width, 
+      height: this.state.height 
+    };
+  }
+
+  updateDimensions = () => {
+    if (this.containerElement.current) {
+      const dimensions = this.containerElement.current.getBoundingClientRect();
+
+      if (dimensions.height > dimensions.width) {
+        this.setState({ width: dimensions.width - DIAGRAM_PADDING, height: undefined });
+        return;
+      } else {
+        this.setState({ width: undefined, height: dimensions.height - DIAGRAM_PADDING });
+        return;
+      }
+    }
+
+    this.setState({ width: "60%", height: undefined });
   }
 
   onSegmentSelect = (segment, id) => {
@@ -52,11 +81,28 @@ class ChordPanel extends React.Component {
     this.setState({selected: undefined});
   }
 
+  componentDidMount() {
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
   renderSegment = (index, id, segmentMap) => {
     return <ChordSegment 
              key={index + 1} id={id} data={segmentMap} 
              isSelected={this.isSegmentSelected(id)}
              onSegmentSelect={this.onSegmentSelect} />;
+  }
+
+  renderOverlay = () => {
+    if (!this.state.selected) {
+      return undefined;
+    }  
+
+    return <use xlinkHref={`#${SEGMENT_ID_PREFIX}${this.state.selected}`} />;
   }
 
   renderSegments = () => {
@@ -90,13 +136,16 @@ class ChordPanel extends React.Component {
 
   render = () => {
     return (
-      <svg className="chord-diagram" viewBox="0 0 1000 1000">
-        <circle cx="50%" cy="50%" r="495" className={this.getOutlineClass()} />
-        <circle cx="50%" cy="50%" r="477" className={this.getOutlineClass()} />
-        <circle cx="50%" cy="50%" r="486" 
-                className="outer-rim" onClick={this.handleRimClick} />
-        {this.renderSegments()}
-      </svg>
+      <div className="chord-diagram" ref={this.containerElement}>
+        <svg style={this.getStyle()} viewBox="0 0 1000 1000">
+          <circle cx="50%" cy="50%" r="495" className={this.getOutlineClass()} />
+          <circle cx="50%" cy="50%" r="477" className={this.getOutlineClass()} />
+          <circle cx="50%" cy="50%" r="486" 
+                  className="outer-rim" onClick={this.handleRimClick} />
+          {this.renderSegments()}
+          {this.renderOverlay()}
+        </svg>
+      </div>
     );
   }
 }

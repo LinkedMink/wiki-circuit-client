@@ -1,26 +1,32 @@
 .chord-diagram {
-  width: 60%;
-
-  > circle {
-    fill: none;
-    stroke: #333;
-    stroke-width: 2;
-    opacity: 0.5;
-  }
-
-  > circle.outer-rim {
-    cursor: pointer;
-    stroke: #888;
-    stroke-width: 16;
-    transition: 0.25s;
-  }
-
-  > circle.outer-rim:hover {
-    opacity: 0.85;
-  }
-
-  > circle.outline {
-    stroke: #f0fc03;
-    stroke-width: 10;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+   > svg {
+    > circle {
+      fill: none;
+      stroke: #333;
+      stroke-width: 2;
+      opacity: 0.5;
+    }
+  
+    > circle.outer-rim {
+      cursor: pointer;
+      stroke: #888;
+      stroke-width: 16;
+      transition: 0.25s;
+    }
+  
+    > circle.outer-rim:hover {
+      opacity: 0.85;
+    }
+  
+    > circle.outline {
+      stroke: #f0fc03;
+      stroke-width: 10;
+    }
   }
 }

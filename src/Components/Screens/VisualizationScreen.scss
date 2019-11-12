@@ -10,7 +10,11 @@
   height: calc(100% - 46px);
 
   > div:first-child {
-    text-align: center;
+    padding: 0;
+  }
+
+  > div:last-child {
+    padding: 0 10px 0 0;
   }
 }
 

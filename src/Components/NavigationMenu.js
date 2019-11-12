@@ -23,6 +23,7 @@ class NavigationMenu extends React.Component {
                 <svg viewBox="0 0 8 8">
                   <use href={this.getIconSrc(value.icon)}></use>
                 </svg>
+                {/*<span class={this.getIconClass(value.icon)} title={value.name} aria-hidden="true"></span>*/}
                 {value.name}
               </Nav.Link>
             </LinkContainer>
