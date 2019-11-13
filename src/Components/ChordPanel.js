@@ -98,11 +98,9 @@ class ChordPanel extends React.Component {
   }
 
   renderOverlay = () => {
-    if (!this.state.selected) {
-      return undefined;
+    if (this.state.selected) {
+      return <use xlinkHref={`#${SEGMENT_ID_PREFIX}${this.state.selected}`} />;
     }  
-
-    return <use xlinkHref={`#${SEGMENT_ID_PREFIX}${this.state.selected}`} />;
   }
 
   renderSegments = () => {

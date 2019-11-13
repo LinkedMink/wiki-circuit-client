@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import { Container, Row, Col } from 'react-bootstrap';
 
 import './App.scss';
@@ -16,7 +16,7 @@ import AboutScreen from './Components/Screens/AboutScreen';
 class App extends React.Component {
   render() {
     return (
-      <Router>
+      <BrowserRouter>
         <HeaderPanel />
         <Container className="app-container" fluid="true">
           <LoadingOverlayContainer />
@@ -35,7 +35,7 @@ class App extends React.Component {
           </Row>
         </Container>
         <AlertDialogPanel />
-      </Router>
+      </BrowserRouter>
     );
   }
 }

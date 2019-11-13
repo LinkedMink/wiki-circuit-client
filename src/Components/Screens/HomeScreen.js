@@ -6,7 +6,7 @@ class HomeScreen extends React.Component {
     super(props);
 
     this.state = {
-      articleName: "",
+      articleName: ""
     };
 
     this.handleChange  = this.handleChange.bind(this);
