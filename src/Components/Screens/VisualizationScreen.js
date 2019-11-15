@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 
+import ArticleNameSubmit from '../Controls/ArticleNameSubmit';
 import RangeSelector from '../Controls/RangeSelector';
 import ChordPanel from '../ChordPanel';
 import SidePanel from '../SidePanel';
@@ -134,10 +135,32 @@ class VisualizationScreen extends React.Component {
     this.setState({segmentCount: value});
   }
 
+  handleChange(event) {
+    this.setState({[event.target.id]: event.target.value});
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+
+    if (this.props.history) {
+      const encoded = encodeURIComponent(this.state.articleName.replace(' ', '_'));
+      const route = `/visualization/${encoded}`;
+      this.props.history.push(route);
+    }
+  }
+
   render = () => {
     return (
-      <div>
-        <h2>Article: {this.getReadableId(this.props.match.params.id)}</h2>
+      <div className='screen-container'>
+        <Row className="header-panel header-block">
+          <Col xs="12" md="8">
+            <h2>Article: {this.getReadableId(this.props.match.params.id)}</h2>
+          </Col>
+          <Col xs="12" md="4">
+            <ArticleNameSubmit buttonVariant="dark" history={this.props.history} />
+          </Col>
+        </Row>
+        
         <Row className="chord-panel">
           <Col xs="12" sm="8">
             <ChordPanel 

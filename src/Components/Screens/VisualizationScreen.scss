@@ -1,20 +1,27 @@
-.panel-border {
-  border: 1px solid #000;
+.header-panel {
+  > div:first-child {
+    padding: 0;
+  }
+
+  > div:last-child {
+    padding: 0;
+    vertical-align: middle;
+    height: 100%;
+    margin: auto 0;
+  }
 }
 
 .chord-panel {
   margin: auto;
-  border-top: 1px solid #343a40;
-  border-bottom: 1px solid #343a40;
-  padding: 10px 0;
-  height: calc(100% - 46px);
+  padding: 10px 0 10px 0;
+  height: calc(100% - 56px);
 
   > div:first-child {
     padding: 0;
   }
 
   > div:last-child {
-    padding: 0 10px 0 0;
+    padding: 0 15px 0 0;
   }
 }
 
