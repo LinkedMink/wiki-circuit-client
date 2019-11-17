@@ -28,7 +28,7 @@ the user to control the visualization and interact with it to get more informati
 ### Screenshot
 ![UI Screenshot](https://github.com/LinkedMink/wiki-circuit-client/raw/master/screenshot.png)
 
-## Available Scripts
+## Scripts
 
 In the project directory, you can run:
 
@@ -64,3 +64,52 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+### `npm run lint`
+Run the linter on the src directory.
+
+### `npm run startProduction`
+Serve the production bundle that results from `npm run build`. The built bundle can run on any web server, 
+but the serve package has been included to keep Node.js as a single dependency.
+
+### `npm run containerize`
+Package the application as a docker container. Set the environmental variable REACT_APP_SERVER_BASE_URL.
+
+## Deployment - Docker
+
+There is no requirement to run on docker, but the project has been configured to do so if desired. Install 
+the development dependencies for both the server and client.
+
+```bash
+npm install -g cross-env
+cd ./wiki-circuit-server
+npm install
+cd ../wiki-circuit-client
+npm install
+```
+
+Containerize the both the server and client application with. You will have to set the server URL at build
+time for the client app since it's contained in the built bundle.
+
+```bash
+cd ./wiki-circuit-server
+npm run containerize
+cd ../wiki-circuit-client
+npx cross-env REACT_APP_SERVER_BASE_URL=https://api.mydomain.com:55000 \
+  npm run containerize
+```
+
+Run the containers on the target machine. Networking can be configured by environmental variables.
+
+```bash
+docker run -d \
+  -p 55000:8080 \
+  -e ALLOWED_ORIGINS=http://mydomain.com:8080 \
+  --name wiki-circuit-server \
+  linkedmink/wiki-circuit-server
+
+docker run \
+  -p 8080:80 \
+  --name wiki-circuit-client \
+  linkedmink/wiki-circuit-client
+```

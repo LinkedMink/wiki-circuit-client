@@ -6,7 +6,9 @@ import { alertError } from "../Actions/Alert";
 import { loadingStart, loadingReport, loadingEnd } from "../Actions/Loading";
 import { JobStatus, MessagePrefixes } from "../Constants/Message";
 
-const SERVER_BASE_URL = 'http://localhost:8080';
+const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL 
+  ? process.env.REACT_APP_SERVER_BASE_URL 
+  : 'http://localhost:8080';
 const JOB_PATH = '/article';
 const JOB_CHECK_INTERVAL = 3000;
 

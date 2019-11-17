@@ -157,7 +157,7 @@ class VisualizationScreen extends React.Component {
             <h2>Article: {this.getReadableId(this.props.match.params.id)}</h2>
           </Col>
           <Col xs="12" md="4">
-            <ArticleNameSubmit buttonVariant="dark" history={this.props.history} />
+            <ArticleNameSubmit buttonVariant="primary" history={this.props.history} />
           </Col>
         </Row>
         

@@ -1,0 +1,11 @@
+.vscode
+coverage
+node_modules
+.env
+.eslintrc.json
+.gitignoore
+jest.config.js
+README.md
+screenshot.png
+
+npm-debug.log

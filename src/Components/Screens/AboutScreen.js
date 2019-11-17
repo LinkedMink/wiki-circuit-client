@@ -33,7 +33,9 @@ class AboutScreen extends React.Component {
           Note that the code was never written to be production ready. It was written mainly to demonstrate the various technologies
           used to build the software.
         </p>
-        <h3>Contact</h3>
+        <Row className="header-block content-block">
+          <h4>Contact</h4>
+        </Row>
         <p>
           Email: <a href="mailto:harlan@linkedmink.space">harlan@linkedmink.space</a>
         </p>
