@@ -1,7 +1,6 @@
 # Wiki Circuit - Client
 
 ## Project Overview
-
 Wiki Circuit allows users to analyze connectivity between Wikipedia articles. The application downloads an initial input
 article. From this input, it will find all the links to other articles inside the body and download the linked articles. 
 It will precede to download articles in a recursive fashion upto a specified depth. The links will be parsed and counted 
@@ -19,7 +18,6 @@ Note that the code was never written to be production ready. It was written main
 used to build the software.
 
 ## Client Project
-
 This project host a React based application that allows the user to submit a query for a specified article. This kicks off
 a job on the server with the client tracking the progress of the specified job. When the job completes, the return data
 is downloaded. The downloaded data is then used a generate the chord visualization. An evolving array of controls allows
@@ -28,12 +26,13 @@ the user to control the visualization and interact with it to get more informati
 ### Screenshot
 ![UI Screenshot](https://github.com/LinkedMink/wiki-circuit-client/raw/master/screenshot.png)
 
-## Scripts
+### Sample App
+Try it out: [http://wiki-circuit.apps.linkedmink.space/](http://wiki-circuit.apps.linkedmink.space/)
 
+## Scripts
 In the project directory, you can run:
 
 ### `npm start`
-
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
@@ -41,12 +40,10 @@ The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
 ### `npm test`
-
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
-
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
@@ -56,7 +53,6 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `npm run eject`
-
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
 If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
@@ -76,7 +72,6 @@ but the serve package has been included to keep Node.js as a single dependency.
 Package the application as a docker container. Set the environmental variable REACT_APP_SERVER_BASE_URL.
 
 ## Deployment - Docker
-
 There is no requirement to run on docker, but the project has been configured to do so if desired. Install 
 the development dependencies for both the server and client.
 
