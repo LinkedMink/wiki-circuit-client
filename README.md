@@ -30,6 +30,12 @@ the user to control the visualization and interact with it to get more informati
 Try it out: [http://wiki-circuit.apps.linkedmink.space/](http://wiki-circuit.apps.linkedmink.space/)
 
 ## Scripts
+To run the application, install cross-env globally.
+
+```bash
+npm install -g cross-env
+```
+
 In the project directory, you can run:
 
 ### `npm start`
@@ -83,8 +89,8 @@ cd ../wiki-circuit-client
 npm install
 ```
 
-Containerize the both the server and client application with. You will have to set the server URL at build
-time for the client app since it's contained in the built bundle.
+Containerize both the server and client application. You will have to set the server URL at build time for 
+the client app since it's contained in the built bundle.
 
 ```bash
 cd ./wiki-circuit-server
@@ -103,7 +109,7 @@ docker run -d \
   --name wiki-circuit-server \
   linkedmink/wiki-circuit-server
 
-docker run \
+docker run -d \
   -p 8080:80 \
   --name wiki-circuit-client \
   linkedmink/wiki-circuit-client

@@ -1,6 +1,8 @@
 .vscode
 coverage
 node_modules
+public
+src
 .env
 .eslintrc.json
 .gitignoore
