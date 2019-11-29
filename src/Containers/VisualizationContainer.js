@@ -10,7 +10,9 @@ const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL
   ? process.env.REACT_APP_SERVER_BASE_URL 
   : 'http://localhost:8080';
 const JOB_PATH = '/article';
-const JOB_CHECK_INTERVAL = 3000;
+const JOB_CHECK_INTERVAL = process.env.REACT_APP_JOB_CHECK_INTERVAL
+  ? Number(process.env.REACT_APP_JOB_CHECK_INTERVAL)
+  : 2500;
 
 function getHeaders() {
   return { 

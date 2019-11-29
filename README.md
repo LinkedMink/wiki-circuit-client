@@ -27,7 +27,7 @@ the user to control the visualization and interact with it to get more informati
 ![UI Screenshot](https://github.com/LinkedMink/wiki-circuit-client/raw/master/screenshot.png)
 
 ### Sample App
-Try it out: [http://wiki-circuit.apps.linkedmink.space/](http://wiki-circuit.apps.linkedmink.space/)
+Try it out: [https://wiki-circuit.apps.linkedmink.space/](https://wiki-circuit.apps.linkedmink.space/)
 
 ## Scripts
 To run the application, install cross-env globally.
@@ -114,3 +114,15 @@ docker run -d \
   --name wiki-circuit-client \
   linkedmink/wiki-circuit-client
 ```
+
+The project contains a sample deployment.yaml file for deploying to a Kubernetes cluster. Edit the 
+file as necessary. Then apply the changes to your cluster.
+
+```sh
+docker push linkedmink/wiki-circuit-server
+docker push linkedmink/wiki-circuit-client
+kubectl apply -f ./deployment.yaml
+```
+
+IMPORTANT: wiki-circuit-server is not designed to be load balanced since it relies on an internal
+memory cache. Only a single running instance is supported.
