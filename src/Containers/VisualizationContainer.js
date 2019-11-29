@@ -1,4 +1,5 @@
 import { connect } from "react-redux";
+import urlJoin from "url-join";
 
 import VisualizationScreen from "../Components/Screens/VisualizationScreen";
 import { saveArticleData } from "../Actions/Article";
@@ -63,7 +64,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         }
       };
     
-      const url = SERVER_BASE_URL + JOB_PATH + '/' + articleName;
+      const url = urlJoin(SERVER_BASE_URL, JOB_PATH, articleName);
       const options = { 
         method: 'GET',
         headers: getHeaders()
@@ -98,7 +99,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         }
       };
 
-      const url = SERVER_BASE_URL + JOB_PATH;
+      const url = urlJoin(SERVER_BASE_URL, JOB_PATH);
       const options = { 
         method: 'POST',
         body: JSON.stringify({ id: articleName }),
