@@ -6,10 +6,8 @@ src
 .env
 .eslintrc.json
 .gitignoore
-deploy.sh
+build.sh
 deployment.yaml
 jest.config.js
 README.md
 screenshot.png
-
-npm-debug.log

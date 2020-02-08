@@ -20,8 +20,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.js",
     "startProduction": "serve -s build -l 80",
-    "containerize": "npm run build && docker build -t linkedmink/wiki-circuit-client .",
-    "containerizeMulti": "npm run build && docker buildx build --platform linux/amd64,linux/arm/v7 -t linkedmink/necro-automobilia ."
+    "containerize": "npm run build && docker build -t linkedmink/wiki-circuit-client ."
   },
   "browserslist": {
     "production": [
