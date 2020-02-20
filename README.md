@@ -27,7 +27,7 @@ the user to control the visualization and interact with it to get more informati
 ![UI Screenshot](https://github.com/LinkedMink/wiki-circuit-client/raw/master/screenshot.png)
 
 ### Sample App
-Try it out: [https://wiki-circuit.apps.linkedmink.space/](https://wiki-circuit.apps.linkedmink.space/)
+Try it out: [https://wiki-circuit.linkedmink.space/](https://wiki-circuit.linkedmink.space/)
 
 ## Scripts
 To run the application, install cross-env globally.
