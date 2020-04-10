@@ -13,7 +13,7 @@ if [ -z "$DOCKER_REGISTRY" ]; then
 fi
 
 if [ -z "$KUBERNETES_NAMESPACE" ]; then
-  KUBERNETES_NAMESPACE="default" 
+  KUBERNETES_NAMESPACE="wiki-circuit" 
 fi
 
 npx cross-env REACT_APP_SERVER_BASE_URL="${API_URL}" npm run build
