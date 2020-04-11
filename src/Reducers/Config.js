@@ -1,4 +1,4 @@
-import { SAVE_CONFIG } from '../Actions/ConfigAction';
+import { SAVE_CONFIG } from '../Actions/Config';
 
 const config = (state = {}, action) => {
   if (action.type === SAVE_CONFIG) {
