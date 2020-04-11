@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from "react-redux";
 
 import './index.scss';
-import App from './App';
+import AppContainer from './AppContainer';
 import * as serviceWorker from './serviceWorker';
 import store from "./Store";
 
@@ -14,7 +14,7 @@ require('open-iconic/font/css/open-iconic-bootstrap.css');
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <AppContainer />
   </Provider>, 
   document.getElementById('root'));
 

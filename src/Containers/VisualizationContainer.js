@@ -1,16 +1,14 @@
 import { connect } from "react-redux";
 import urlJoin from "url-join";
 
+import { getServiceActionUrl } from "../Shared/RequestFactory";
 import VisualizationScreen from "../Components/Screens/VisualizationScreen";
 import { saveArticleData } from "../Actions/Article";
 import { alertError } from "../Actions/Alert";
 import { loadingStart, loadingReport, loadingEnd } from "../Actions/Loading";
 import { JobStatus, MessagePrefixes } from "../Constants/Message";
+import { Service, Routes } from "../Constants/Service";
 
-const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL 
-  ? process.env.REACT_APP_SERVER_BASE_URL 
-  : 'http://localhost:8080';
-const JOB_PATH = '/article';
 const JOB_CHECK_INTERVAL = process.env.REACT_APP_JOB_CHECK_INTERVAL
   ? Number(process.env.REACT_APP_JOB_CHECK_INTERVAL)
   : 2500;
@@ -64,7 +62,9 @@ function mapDispatchToProps(dispatch, ownProps) {
         }
       };
     
-      const url = urlJoin(SERVER_BASE_URL, JOB_PATH, articleName);
+      const url = urlJoin(
+        getServiceActionUrl(Service.ARTICLE_JOB, Routes[Service.ARTICLE_JOB].ARTICLE), 
+        articleName);
       const options = { 
         method: 'GET',
         headers: getHeaders()
@@ -99,7 +99,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         }
       };
 
-      const url = urlJoin(SERVER_BASE_URL, JOB_PATH);
+      const url = getServiceActionUrl(Service.ARTICLE_JOB, Routes[Service.ARTICLE_JOB].ARTICLE);
       const options = { 
         method: 'POST',
         body: JSON.stringify({ id: articleName }),

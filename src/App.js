@@ -5,6 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import './App.scss';
 
 import HeaderPanel from './Components/HeaderPanel';
+import LoadingOverlay from './Components/LoadingOverlay';
 import NavigationMenuContainer from './Containers/NavigationMenuContainer';
 import AlertDialogPanel from './Containers/AlertDialogPanel';
 import LoadingOverlayContainer from './Containers/LoadingOverlayContainer';
@@ -14,7 +15,19 @@ import VisualizationContainer from './Containers/VisualizationContainer';
 import AboutScreen from './Components/Screens/AboutScreen';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    if (!this.props.isConfigLoaded && this.props.getConfig) {
+      this.props.getConfig();
+    }
+  }
+
   render() {
+    if (!this.props.isConfigLoaded) {
+      return <LoadingOverlay isLoading={true} />
+    }
+
     return (
       <BrowserRouter>
         <HeaderPanel />
