@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import App from "./App";
 import { getJsonResponse } from "./Shared/RequestFactory";
 import { saveConfig } from "./Actions/Config";
-import { Routes, Service } from "./Constants/Service";
+import { Routes, Services } from "./Constants/Service";
 
 const mapStateToProps = (state) => {
   return {
@@ -26,8 +26,8 @@ const mapDispatchToProps = (dispatch) => {
 
       return getJsonResponse(
         dispatch, 
-        Service.SELF,
-        Routes[Service.SELF].CONFIG, 
+        Services.SELF,
+        Routes[Services.SELF].CONFIG, 
         responseHandler);
     },
   };

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { polarToCartesian } from '../Helpers/Math';
+import { polarToCartesian } from '../Shared/Math';
 
 import './ChordLines.scss';
 

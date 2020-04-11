@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ChordSegment from './ChordSegment';
-import { ratioToRadians } from '../Helpers/Math';
+import { ratioToRadians } from '../Shared/Math';
 
 import './ChordPanel.scss';
 

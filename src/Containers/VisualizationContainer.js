@@ -1,30 +1,22 @@
 import { connect } from "react-redux";
 import urlJoin from "url-join";
 
-import { getServiceActionUrl } from "../Shared/RequestFactory";
+import { getServiceActionUrl, getRequestOptions, HttpMethods } from "../Shared/RequestFactory";
 import VisualizationScreen from "../Components/Screens/VisualizationScreen";
 import { saveArticleData } from "../Actions/Article";
 import { alertError } from "../Actions/Alert";
 import { loadingStart, loadingReport, loadingEnd } from "../Actions/Loading";
 import { JobStatus, MessagePrefixes } from "../Constants/Message";
-import { Service, Routes } from "../Constants/Service";
+import { Services, Routes, ResponseCodes } from "../Constants/Service";
 
 const JOB_CHECK_INTERVAL = process.env.REACT_APP_JOB_CHECK_INTERVAL
   ? Number(process.env.REACT_APP_JOB_CHECK_INTERVAL)
   : 2500;
 
-function getHeaders() {
-  return { 
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  };
-}
-
-function getCatchHandler(dispatch) {
-  return (error) => {
-    dispatch(loadingEnd());
-    dispatch(alertError(error.message));
-  };
+function delay(t, v) {
+  return new Promise(function(resolve) { 
+    setTimeout(resolve.bind(null, v), t)
+  });
 }
 
 function mapStateToProps (state, ownProps) {
@@ -35,7 +27,10 @@ function mapStateToProps (state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const catchHandler = getCatchHandler(dispatch);
+  const catchHandler = (error) => {
+    dispatch(loadingEnd());
+    dispatch(alertError(error.message));
+  };
 
   return {
     getJobStatusToStore: (articleName, progress) => {
@@ -54,7 +49,7 @@ function mapDispatchToProps(dispatch, ownProps) {
           dispatch(saveArticleData(articleName, json.data));
           dispatch(loadingEnd());
           dispatch(alertError("Job failed mid-operation, check server logs"));
-        } else if (json.message.startsWith(MessagePrefixes.NO_JOB)) {
+        } else if (json.data.startsWith && json.data.startsWith(MessagePrefixes.NO_JOB)) {
           dispatch(loadingEnd());
           dispatch(alertError("Job doesn't exist on the server"));
         } else {
@@ -63,48 +58,37 @@ function mapDispatchToProps(dispatch, ownProps) {
       };
     
       const url = urlJoin(
-        getServiceActionUrl(Service.ARTICLE_JOB, Routes[Service.ARTICLE_JOB].ARTICLE), 
+        getServiceActionUrl(Services.ARTICLE_JOB, Routes[Services.ARTICLE_JOB].ARTICLE), 
         articleName);
-      const options = { 
-        method: 'GET',
-        headers: getHeaders()
-      };
-    
-      const getJobStatus = () => {
-        fetch(url, options)
+      const options = getRequestOptions();
+
+      return delay(JOB_CHECK_INTERVAL).then(() => {
+        return fetch(url, options)
           .then(response => response.json())
           .then(responseHandler)
           .catch(catchHandler);
-      }
-
-      setTimeout(getJobStatus, JOB_CHECK_INTERVAL);
+      });
     },
     getVisualizationDataToStore: (articleName) => {
       dispatch(loadingStart(true));
 
       const responseHandler = (json) => {
-        if (json && json.status === 'success') {
-          dispatch(saveArticleData(articleName, { progress: { completed: 0 } }));
-        } else if (json && json.message) {
-          if (json.message.startsWith(MessagePrefixes.IN_CACHE) || 
-              json.message.startsWith(MessagePrefixes.JOB_STARTED)) {
-            dispatch(saveArticleData(articleName, { progress: { completed: 0 } }));
-          } else {
-            dispatch(loadingEnd());
-            dispatch(alertError(json.message));
+        if (json && json.status === ResponseCodes.SUCCESS) {
+          return dispatch(saveArticleData(articleName, { progress: { completed: 0 } }));
+        } else if (json && json.data && json.data.startsWith) {
+          if (json.data.startsWith(MessagePrefixes.IN_CACHE) || json.data.startsWith(MessagePrefixes.JOB_STARTED)) {
+            return dispatch(saveArticleData(articleName, { progress: { completed: 0 } }));
           }
+          dispatch(loadingEnd());
+          return dispatch(alertError(json.data));
         } else {
           dispatch(loadingEnd());
-          dispatch(alertError("Failed to start job"));
+          return dispatch(alertError("Failed to start job"));
         }
       };
 
-      const url = getServiceActionUrl(Service.ARTICLE_JOB, Routes[Service.ARTICLE_JOB].ARTICLE);
-      const options = { 
-        method: 'POST',
-        body: JSON.stringify({ id: articleName }),
-        headers: getHeaders()
-      };
+      const url = getServiceActionUrl(Services.ARTICLE_JOB, Routes[Services.ARTICLE_JOB].ARTICLE);
+      const options = getRequestOptions(HttpMethods.POST, { id: articleName });
 
       return fetch(url, options)
         .then(response => response.json())

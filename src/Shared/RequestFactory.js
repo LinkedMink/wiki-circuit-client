@@ -14,7 +14,7 @@ export const HttpMethods = {
   DELETE: "DELETE",
 }
 
-const getOptions = (method = HttpMethods.GET, requestData = null, isAuthorized = false) => {
+export const getRequestOptions = (method = HttpMethods.GET, requestData = null, isAuthorized = false) => {
   const headers = { 
     'Accept': 'application/json',
     'Content-Type': 'application/json'
@@ -104,7 +104,7 @@ export const getJsonResponse = (
     url += '?' + query
   }
 
-  const options = getOptions(method, method === HttpMethods.GET ? null : requestData, isAuthorized);
+  const options = getRequestOptions(method, method === HttpMethods.GET ? null : requestData, isAuthorized);
 
   dispatch(loadingStart())
 

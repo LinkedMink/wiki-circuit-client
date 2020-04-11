@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ChordLines from './ChordLines';
-import { polarToCartesian, radiansToDegrees } from '../Helpers/Math';
+import { polarToCartesian, radiansToDegrees } from '../Shared/Math';
 
 import './ChordSegment.scss';
 
