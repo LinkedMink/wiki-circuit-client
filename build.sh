@@ -1,6 +1,5 @@
 #/bin/sh
 
-API_URL="https://wiki-circuit-api.linkedmink.space"
 IMAGE_NAME="wiki-circuit-client"
 ARCHITECTURES="linux/amd64,linux/arm/v7"
 
@@ -9,12 +8,14 @@ if [ -z "$DOCKER_SCOPE" ]; then
 fi
 
 if [ -z "$DOCKER_REGISTRY" ]; then
-  DOCKER_REGISTRY="" 
+  DOCKER_REGISTRY="registry.linkedmink.space/" 
 fi
 
 if [ -z "$KUBERNETES_NAMESPACE" ]; then
   KUBERNETES_NAMESPACE="wiki-circuit" 
 fi
+
+npm run build
 
 if [ "$1" = "deploy" ]; then
   kubectl set image \

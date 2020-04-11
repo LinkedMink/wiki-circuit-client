@@ -13,12 +13,16 @@ spec:
         app: wiki-circuit-client
     spec:
       nodeSelector:
-        "beta.kubernetes.io/os": linux
+        "kubernetes.io/os": linux
       containers:
       - name: wiki-circuit-client
         image: linkedmink/wiki-circuit-client
         ports:
         - containerPort: 80
+        env:
+        - name: APP_SERVER_BASE_URL
+          value: "https://wiki-circuit-api.linkedmink.space"
+
 ---
 apiVersion: v1
 kind: Service
@@ -29,38 +33,3 @@ spec:
   - port: 80
   selector:
     app: wiki-circuit-client
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: wiki-circuit-server
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: wiki-circuit-server
-  template:
-    metadata:
-      labels:
-        app: wiki-circuit-server
-    spec:
-      nodeSelector:
-        "beta.kubernetes.io/os": linux
-      containers:
-      - name: wiki-circuit-server
-        image: linkedmink/wiki-circuit-server
-        ports:
-        - containerPort: 8080
-        env:
-        - name: ALLOWED_ORIGINS
-          value: '["https://wiki-circuit.apps.linkedmink.space","http://wiki-circuit.apps.linkedmink.space"]'
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: wiki-circuit-server
-spec:
-  ports:
-  - port: 8080
-  selector:
-    app: wiki-circuit-server
