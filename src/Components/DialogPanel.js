@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import React from "react";
+import { Button, Modal } from "react-bootstrap";
 
 class DialogPanel extends React.Component {
   constructor(props) {

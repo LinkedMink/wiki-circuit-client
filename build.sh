@@ -2,6 +2,7 @@
 
 IMAGE_NAME="wiki-circuit-client"
 ARCHITECTURES="linux/amd64,linux/arm/v7"
+DOCKER_ARGS=""
 
 if [ -z "$DOCKER_SCOPE" ]; then
   DOCKER_SCOPE="linkedmink/" 
@@ -15,7 +16,14 @@ if [ -z "$KUBERNETES_NAMESPACE" ]; then
   KUBERNETES_NAMESPACE="wiki-circuit" 
 fi
 
-npm run build
+if [ "$2" = "prod" ]; then
+  npm run build:prod
+  npm run build:serve:prod
+  DOCKER_ARGS="--build-arg ENVIRONMENT=production"
+else
+  npm run build
+  npm run build:serve
+fi
 
 if [ "$1" = "deploy" ]; then
   kubectl set image \
@@ -24,7 +32,7 @@ if [ "$1" = "deploy" ]; then
     --namespace="${KUBERNETES_NAMESPACE}"
 fi
 
-docker buildx build \
+docker buildx build ${DOCKER_ARGS} \
   --platform "${ARCHITECTURES}" \
   -t "${DOCKER_REGISTRY}${DOCKER_SCOPE}${IMAGE_NAME}:latest" \
   --push .

@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import ChordSegment from './ChordSegment';
-import { ratioToRadians } from '../Shared/Math';
+import ChordSegment from "./ChordSegment";
+import { ratioToRadians } from "../Shared/Math";
 
-import './ChordPanel.scss';
+import "./ChordPanel.scss";
 
-const SEGMENT_ID_PREFIX = 'segment';
+const SEGMENT_ID_PREFIX = "segment";
 const DEFAULT_SEGMENT_COUNT = 30;
 const DIAGRAM_PADDING = 40;
 
@@ -18,68 +18,74 @@ class ChordPanel extends React.Component {
     this.state = {
       selected: undefined,
       width: undefined,
-      height: undefined
+      height: undefined,
     };
   }
 
-  isSegmentSelected = (id) => {
-    return (this.state.selected === id)
-  }
+  isSegmentSelected = id => {
+    return this.state.selected === id;
+  };
 
   getOutlineClass = () => {
     if (this.state.selected === undefined) {
-      return 'outline';
+      return "outline";
     } else {
-      return '';
+      return "";
     }
-  }
+  };
 
   getStyle = () => {
-    return { 
-      width: this.state.width, 
-      height: this.state.height 
+    return {
+      width: this.state.width,
+      height: this.state.height,
     };
-  }
+  };
 
   updateDimensions = () => {
     if (this.containerElement.current) {
       const dimensions = this.containerElement.current.getBoundingClientRect();
 
       if (dimensions.height > dimensions.width) {
-        this.setState({ width: dimensions.width - DIAGRAM_PADDING, height: undefined });
+        this.setState({
+          width: dimensions.width - DIAGRAM_PADDING,
+          height: undefined,
+        });
         return;
       } else {
-        this.setState({ width: undefined, height: dimensions.height - DIAGRAM_PADDING });
+        this.setState({
+          width: undefined,
+          height: dimensions.height - DIAGRAM_PADDING,
+        });
         return;
       }
     }
 
     this.setState({ width: "60%", height: undefined });
-  }
+  };
 
   onSegmentSelect = (segment, id) => {
     if (this.props.onPartSelect) {
       const visibleLinks = {};
       const articles = this.segmentMap.get(id).segment.linkedArticles;
-      Object.keys(articles).forEach((article) => {
+      Object.keys(articles).forEach(article => {
         if (this.segmentMap.has(article)) {
           visibleLinks[article] = articles[article];
         }
-      })
+      });
 
       this.props.onPartSelect(segment, visibleLinks);
     }
 
-    this.setState({selected: id});
-  }
+    this.setState({ selected: id });
+  };
 
   handleRimClick = () => {
     if (this.props.onPartSelect) {
       this.props.onPartSelect();
     }
 
-    this.setState({selected: undefined});
-  }
+    this.setState({ selected: undefined });
+  };
 
   componentDidMount() {
     this.updateDimensions();
@@ -91,28 +97,35 @@ class ChordPanel extends React.Component {
   }
 
   renderSegment = (index, id, segmentMap) => {
-    return <ChordSegment 
-             key={index + 1} id={id} data={segmentMap} 
-             isSelected={this.isSegmentSelected(id)}
-             onSegmentSelect={this.onSegmentSelect} />;
-  }
+    return (
+      <ChordSegment
+        key={index + 1}
+        id={id}
+        data={segmentMap}
+        isSelected={this.isSegmentSelected(id)}
+        onSegmentSelect={this.onSegmentSelect}
+      />
+    );
+  };
 
   renderOverlay = () => {
     if (this.state.selected) {
       return <use xlinkHref={`#${SEGMENT_ID_PREFIX}${this.state.selected}`} />;
-    }  
-  }
+    }
+  };
 
   renderSegments = () => {
     if (!this.props.data) {
       return;
     }
 
-    const segmentCount = this.props.segmentCount ? this.props.segmentCount : DEFAULT_SEGMENT_COUNT;
+    const segmentCount = this.props.segmentCount
+      ? this.props.segmentCount
+      : DEFAULT_SEGMENT_COUNT;
     this.segmentData = this.props.data.slice(0, segmentCount);
 
     let referencesTotal = 0;
-    this.segmentData.forEach((element) => {
+    this.segmentData.forEach(element => {
       referencesTotal += element.referenceCount;
     });
 
@@ -123,29 +136,46 @@ class ChordPanel extends React.Component {
         segment: segment,
         index: index,
         startAngle: ratioToRadians(referencesToSegment / referencesTotal),
-        arcLength: ratioToRadians(segment.referenceCount / referencesTotal)
+        arcLength: ratioToRadians(segment.referenceCount / referencesTotal),
       });
 
       referencesToSegment += segment.referenceCount;
     });
 
-    return this.segmentData.map((segment, index) => this.renderSegment(index, segment.id, this.segmentMap));
-  }
+    return this.segmentData.map((segment, index) =>
+      this.renderSegment(index, segment.id, this.segmentMap)
+    );
+  };
 
   render = () => {
     return (
       <div className="chord-diagram" ref={this.containerElement}>
         <svg style={this.getStyle()} viewBox="0 0 1000 1000">
-          <circle cx="50%" cy="50%" r="495" className={this.getOutlineClass()} />
-          <circle cx="50%" cy="50%" r="477" className={this.getOutlineClass()} />
-          <circle cx="50%" cy="50%" r="486" 
-                  className="outer-rim" onClick={this.handleRimClick} />
+          <circle
+            cx="50%"
+            cy="50%"
+            r="495"
+            className={this.getOutlineClass()}
+          />
+          <circle
+            cx="50%"
+            cy="50%"
+            r="477"
+            className={this.getOutlineClass()}
+          />
+          <circle
+            cx="50%"
+            cy="50%"
+            r="486"
+            className="outer-rim"
+            onClick={this.handleRimClick}
+          />
           {this.renderSegments()}
           {this.renderOverlay()}
         </svg>
       </div>
     );
-  }
+  };
 }
 
 export default ChordPanel;

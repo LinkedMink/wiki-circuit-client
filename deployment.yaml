@@ -20,8 +20,12 @@ spec:
         ports:
         - containerPort: 80
         env:
-        - name: APP_SERVER_BASE_URL
-          value: "https://wiki-circuit-api.linkedmink.space"
+        - name: USER_SERVICE_URL
+          value: "https://[Your Host]"
+        - name: SCHEDULER_URL
+          value: "https://[Your Host]"
+        - name: JWT_PUBLIC_KEY_FILE
+          value: "[File Name]"
 
 ---
 apiVersion: v1

@@ -1,13 +1,13 @@
-import React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import React from "react";
+import { Row, Col } from "react-bootstrap";
 
-import ArticleNameSubmit from '../Controls/ArticleNameSubmit';
-import RangeSelector from '../Controls/RangeSelector';
-import ChordPanel from '../ChordPanel';
-import SidePanel from '../SidePanel';
-import StatPanel from '../StatPanel';
+import ArticleNameSubmit from "../Controls/ArticleNameSubmit";
+import RangeSelector from "../Controls/RangeSelector";
+import ChordPanel from "../ChordPanel";
+import SidePanel from "../SidePanel";
+import StatPanel from "../StatPanel";
 
-import './VisualizationScreen.scss';
+import "./VisualizationScreen.scss";
 
 const MIN_SEGMENTS_SELECTABLE = 10;
 const MAX_SEGMENTS_SELECTABLE = 50;
@@ -20,7 +20,7 @@ class VisualizationScreen extends React.Component {
       depth: 1,
       segmentCount: 30,
       selected: undefined,
-      visibleLinks: undefined
+      visibleLinks: undefined,
     };
   }
 
@@ -34,42 +34,45 @@ class VisualizationScreen extends React.Component {
     }
 
     if (!this.props.article.result) {
-      if (this.props.article.status === 'faulted') {
+      if (this.props.article.status === "faulted") {
         return [];
       }
 
       if (this.props.getJobStatusToStore) {
         this.props.getJobStatusToStore(
-          this.props.match.params.id, 
-          this.props.article.progress.completed);
+          this.props.match.params.id,
+          this.props.article.progress.completed
+        );
       }
 
       return [];
     }
 
     return this.props.article.result;
-  }
+  };
 
-  getReadableId = (id) => {
-    return decodeURIComponent(id.replace(/_/g, ' '));
-  }
+  getReadableId = id => {
+    return decodeURIComponent(id.replace(/_/g, " "));
+  };
 
   getStatData = () => {
     const parts = new Map();
 
     if (this.state.selected) {
-      parts.set('Article ID', this.getReadableId(this.state.selected.id));
-      parts.set('Referenced', this.state.selected.referenceCount);
-      
+      parts.set("Article ID", this.getReadableId(this.state.selected.id));
+      parts.set("Referenced", this.state.selected.referenceCount);
+
       let uniqueLinks = 0;
       let totalLinks = 0;
-      for (const [, value] of Object.entries(this.state.selected.linkedArticles)) {
+      for (const [, value] of Object.entries(
+        this.state.selected.linkedArticles
+      )) {
         totalLinks += value;
         uniqueLinks++;
       }
 
-      parts.set('Unique Links', uniqueLinks);
-      parts.set('Total Links', totalLinks);
+      parts.set("Unique Links", uniqueLinks);
+      parts.set("Total Links", totalLinks);
 
       return parts;
     }
@@ -77,24 +80,27 @@ class VisualizationScreen extends React.Component {
     if (this.props.article) {
       if (this.props.article.startTime) {
         const start = new Date(this.props.article.startTime);
-        parts.set('Retrieved At', start.toLocaleTimeString('en-US'));
+        parts.set("Retrieved At", start.toLocaleTimeString("en-US"));
       }
 
       if (this.props.article.runTime) {
-        parts.set('Finished In', `${(this.props.article.runTime / 1000).toFixed(1)} s`);
+        parts.set(
+          "Finished In",
+          `${(this.props.article.runTime / 1000).toFixed(1)} s`
+        );
       }
 
       const totals = this.props.article.progress.data;
-      if (totals && totals['0']) {
-        const allTotals = totals['0'];
-        parts.set('Links Found', allTotals.links);
-        parts.set('Unique Articles', allTotals.queued);
-        parts.set('Downloaded Articles', allTotals.downloaded);
+      if (totals && totals["0"]) {
+        const allTotals = totals["0"];
+        parts.set("Links Found", allTotals.links);
+        parts.set("Unique Articles", allTotals.queued);
+        parts.set("Downloaded Articles", allTotals.downloaded);
       }
     }
 
     return parts;
-  }
+  };
 
   getVisibleLinks = () => {
     const parts = new Map();
@@ -106,44 +112,52 @@ class VisualizationScreen extends React.Component {
     }
 
     return parts;
-  }
+  };
 
   getMinSegmentCount = () => {
-    if (this.props.article && this.props.article.result && 
-        this.props.article.result.length < MIN_SEGMENTS_SELECTABLE) {
+    if (
+      this.props.article &&
+      this.props.article.result &&
+      this.props.article.result.length < MIN_SEGMENTS_SELECTABLE
+    ) {
       return this.props.article.result.length;
     }
 
     return MIN_SEGMENTS_SELECTABLE;
-  }
+  };
 
   getMaxSegmentCount = () => {
-    if (this.props.article && this.props.article.result && 
-        this.props.article.result.length < MAX_SEGMENTS_SELECTABLE) {
+    if (
+      this.props.article &&
+      this.props.article.result &&
+      this.props.article.result.length < MAX_SEGMENTS_SELECTABLE
+    ) {
       return this.props.article.result.length;
     }
 
     return MAX_SEGMENTS_SELECTABLE;
-  }
+  };
 
   onPartSelect = (part, visibleLinks) => {
-    this.setState({selected: part});
-    this.setState({visibleLinks: visibleLinks});
-  }
+    this.setState({ selected: part });
+    this.setState({ visibleLinks: visibleLinks });
+  };
 
-  onSegmentCountChange = (value) => {
-    this.setState({segmentCount: value});
-  }
+  onSegmentCountChange = value => {
+    this.setState({ segmentCount: value });
+  };
 
   handleChange(event) {
-    this.setState({[event.target.id]: event.target.value});
+    this.setState({ [event.target.id]: event.target.value });
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
     if (this.props.history) {
-      const encoded = encodeURIComponent(this.state.articleName.replace(' ', '_'));
+      const encoded = encodeURIComponent(
+        this.state.articleName.replace(" ", "_")
+      );
       const route = `/visualization/${encoded}`;
       this.props.history.push(route);
     }
@@ -151,31 +165,36 @@ class VisualizationScreen extends React.Component {
 
   render = () => {
     return (
-      <div className='screen-container'>
+      <div className="screen-container">
         <Row className="header-panel header-block">
           <Col xs="12" md="8">
             <h2>Article: {this.getReadableId(this.props.match.params.id)}</h2>
           </Col>
           <Col xs="12" md="4">
-            <ArticleNameSubmit buttonVariant="primary" history={this.props.history} />
+            <ArticleNameSubmit
+              buttonVariant="primary"
+              history={this.props.history}
+            />
           </Col>
         </Row>
-        
+
         <Row className="chord-panel">
           <Col xs="12" sm="8">
-            <ChordPanel 
+            <ChordPanel
               data={this.getVisualizationData()}
-              segmentCount={this.state.segmentCount} 
-              onPartSelect={this.onPartSelect} />
+              segmentCount={this.state.segmentCount}
+              onPartSelect={this.onPartSelect}
+            />
           </Col>
           <Col className="info-panel" xs="12" sm="4">
             <SidePanel label="Controls">
-              <RangeSelector 
+              <RangeSelector
                 label="Segments"
                 tooltip="Number of article blocks to show"
-                min={this.getMinSegmentCount()} 
+                min={this.getMinSegmentCount()}
                 max={this.getMaxSegmentCount()}
-                onValueChange={this.onSegmentCountChange} />
+                onValueChange={this.onSegmentCountChange}
+              />
             </SidePanel>
             <StatPanel data={this.getStatData()} />
             <StatPanel data={this.getVisibleLinks()} label="Visible Links" />
@@ -183,7 +202,7 @@ class VisualizationScreen extends React.Component {
         </Row>
       </div>
     );
-  }
+  };
 }
 
 export default VisualizationScreen;

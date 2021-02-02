@@ -1,6 +1,9 @@
 FROM node:14-alpine
 
-ENV NODE_ENV production
+ARG ENVIRONMENT=development
+
+ENV NODE_ENV ENVIRONMENT
+ENV IS_CONTAINER_ENV true
 
 WORKDIR /usr/src/app
 

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { BrowserRouter as Link } from "react-router-dom";
-import { Navbar } from 'react-bootstrap';
+import { Navbar } from "react-bootstrap";
 
 class HeaderPanel extends React.Component {
   render() {

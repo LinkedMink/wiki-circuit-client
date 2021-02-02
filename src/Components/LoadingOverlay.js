@@ -1,7 +1,7 @@
-import React from 'react';
-import { ProgressBar } from 'react-bootstrap';
+import React from "react";
+import { ProgressBar } from "react-bootstrap";
 
-import './LoadingOverlay.scss';
+import "./LoadingOverlay.scss";
 
 class LoadingOverlay extends React.Component {
   constructor(props) {
@@ -10,13 +10,13 @@ class LoadingOverlay extends React.Component {
     this.styles = {
       visible: {
         zIndex: 100,
-        opacity: 0.6
+        opacity: 0.6,
       },
       invisible: {
         zIndex: -1,
-        opacity: 0
-      }
-    }
+        opacity: 0,
+      },
+    };
   }
 
   getOverlayStyle() {
@@ -41,7 +41,8 @@ class LoadingOverlay extends React.Component {
     } else {
       return (
         <div>
-          <img alt="Loading Animation" src="/img/gears.svg" /><br />
+          <img alt="Loading Animation" src="/img/gears.svg" />
+          <br />
           <span>{this.props.message}</span>
         </div>
       );
