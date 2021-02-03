@@ -5,7 +5,7 @@ import store from "../Store";
 import { alertError } from "../Actions/AlertAction";
 import { loadingStart, loadingEnd } from "../Actions/LoadingAction";
 import { LogService } from "./LogService";
-import { ResponseCodes, Services } from "../Constants/Service";
+import { ResponseCode, Services } from "../Constants/Service";
 import { Action, Dispatch } from "redux";
 import { isAction } from "./TypeCheck";
 
@@ -55,7 +55,7 @@ export const getRequestOptions = (
 };
 
 const handleRawResponse = (dispatch, url, options) => {
-  return response => {
+  return (response) => {
     if (response.status === 500) {
       logger.error({
         url,
@@ -75,8 +75,8 @@ const handleServiceResponse = <T>(
   dispatch: Dispatch,
   requestSuccessFunc: ResponseHandler<T>
 ) => {
-  return json => {
-    if (json && json.status === ResponseCodes.SUCCESS) {
+  return (json) => {
+    if (json && json.status === ResponseCode.SUCCESS) {
       const result = requestSuccessFunc(json.data);
       if (isAction(result)) {
         dispatch(result);
@@ -84,7 +84,7 @@ const handleServiceResponse = <T>(
     } else if (
       json &&
       json.status !== undefined &&
-      json.status !== ResponseCodes.SUCCESS
+      json.status !== ResponseCode.SUCCESS
     ) {
       dispatch(alertError(json.data));
     } else if (json) {
@@ -99,7 +99,7 @@ const handleServiceResponse = <T>(
 };
 
 const handleGenericCatch = (dispatch, url, options) => {
-  return error => {
+  return (error) => {
     logger.error({
       url,
       verb: options.method,

@@ -1,19 +1,11 @@
 import { connect, MapStateToProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 
-import NavigationMenu from "../Components/NavigationMenu";
+import NavigationMenu, {
+  NavigationMenuProps,
+  NavLink,
+} from "../Components/NavigationMenu";
 import { RootState } from "../Reducers/RootReducer";
-
-export interface NavLink {
-  path: string;
-  name: string;
-  icon: string;
-  disabled: boolean;
-}
-
-export interface NavigationMenuProps {
-  links: NavLink[];
-}
 
 function getGuestLinks(): NavLink[] {
   return [

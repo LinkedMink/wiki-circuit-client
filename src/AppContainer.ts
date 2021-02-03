@@ -34,7 +34,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<
         return;
       }
 
-      const responseHandler = data => {
+      const responseHandler = (data) => {
         return dispatch(saveConfig(data));
       };
 

@@ -11,7 +11,7 @@ class HomeScreen extends React.Component<RouteComponentProps> {
     return (
       <div className="home-container">
         <Row className="justify-content-md-center">
-          <Col className="home-submit" xs="10" sm="8" md="6">
+          <Col className="home-submit" xs="11" sm="10" md="9" lg="8" xl="6">
             <div>
               <h2>Analyze Article</h2>
             </div>

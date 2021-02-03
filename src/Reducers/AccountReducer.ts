@@ -2,10 +2,11 @@ import * as jwt from "jsonwebtoken";
 import { Reducer } from "redux";
 import store from "../Store";
 import { AccountAction, AccountActionType } from "../Actions/AccountAction";
+import { Claim } from "../Constants/Account";
 
 export interface JwtPayload {
   aud: string;
-  claims: string[];
+  claims: Set<Claim>;
   email: string;
   exp: number;
   iat: number;
@@ -28,11 +29,13 @@ const accountReducer: Reducer<AccountReduced, AccountAction> = (
   if (action.type === AccountActionType.SaveSession) {
     const jwtToken = action.payload as string;
     const signerKey = store.getState().config?.signerKey;
+    const decodedToken = (signerKey
+      ? jwt.verify(jwtToken, signerKey)
+      : jwt.decode(jwtToken)) as JwtPayload;
+    decodedToken.claims = new Set(decodedToken.claims);
     return Object.assign({}, state, {
       jwtToken,
-      decodedToken: signerKey
-        ? jwt.verify(jwtToken, signerKey)
-        : jwt.decode(jwtToken),
+      decodedToken,
     });
   } else if (action.type === AccountActionType.DestroySession) {
     return Object.assign({}, state, {

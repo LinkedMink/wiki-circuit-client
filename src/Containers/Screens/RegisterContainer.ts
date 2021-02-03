@@ -8,13 +8,13 @@ import { alertRedirect } from "../../Actions/AlertAction";
 const SUCCESS_MESSAGE =
   "Your account has been created. Verify your email address to login.";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.account.token ? true : false,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     register: (email, password) => {
       const requestData = {

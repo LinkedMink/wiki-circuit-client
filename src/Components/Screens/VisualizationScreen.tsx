@@ -6,14 +6,33 @@ import RangeSelector from "../Controls/RangeSelector";
 import ChordPanel from "../ChordPanel";
 import SidePanel from "../SidePanel";
 import StatPanel from "../StatPanel";
+import { RouteComponentIdProps } from "../../Constants/RouteParams";
 
 import "./VisualizationScreen.scss";
+import { ArticleJob, ArticleResult } from "../../Constants/Scheduler";
 
 const MIN_SEGMENTS_SELECTABLE = 10;
 const MAX_SEGMENTS_SELECTABLE = 50;
 
-class VisualizationScreen extends React.Component {
-  constructor(props) {
+export interface VisualizationScreenProps extends RouteComponentIdProps {
+  article?: ArticleJob;
+  getVisualizationDataToStore: (id: string) => void;
+  getJobStatusToStore: (id: string, progress: number) => void;
+}
+
+export interface VisualizationScreenState {
+  depth: number;
+  segmentCount: number;
+  selected?: ArticleResult;
+  visibleLinks?: Record<string, number>;
+  [key: string]: unknown;
+}
+
+class VisualizationScreen extends React.Component<
+  VisualizationScreenProps,
+  VisualizationScreenState
+> {
+  constructor(props: VisualizationScreenProps) {
     super(props);
 
     this.state = {
@@ -24,7 +43,7 @@ class VisualizationScreen extends React.Component {
     };
   }
 
-  getVisualizationData = () => {
+  getVisualizationData = (): ArticleResult[] => {
     if (!this.props.article) {
       if (this.props.getVisualizationDataToStore) {
         this.props.getVisualizationDataToStore(this.props.match.params.id);
@@ -51,12 +70,12 @@ class VisualizationScreen extends React.Component {
     return this.props.article.result;
   };
 
-  getReadableId = id => {
+  getReadableId = (id: string): string => {
     return decodeURIComponent(id.replace(/_/g, " "));
   };
 
-  getStatData = () => {
-    const parts = new Map();
+  getStatData = (): Map<string, unknown> => {
+    const parts = new Map<string, unknown>();
 
     if (this.state.selected) {
       parts.set("Article ID", this.getReadableId(this.state.selected.id));
@@ -102,8 +121,8 @@ class VisualizationScreen extends React.Component {
     return parts;
   };
 
-  getVisibleLinks = () => {
-    const parts = new Map();
+  getVisibleLinks = (): Map<string, unknown> => {
+    const parts = new Map<string, unknown>();
 
     if (this.state.visibleLinks) {
       for (const [index, value] of Object.entries(this.state.visibleLinks)) {
@@ -114,7 +133,7 @@ class VisualizationScreen extends React.Component {
     return parts;
   };
 
-  getMinSegmentCount = () => {
+  getMinSegmentCount = (): number => {
     if (
       this.props.article &&
       this.props.article.result &&
@@ -126,7 +145,7 @@ class VisualizationScreen extends React.Component {
     return MIN_SEGMENTS_SELECTABLE;
   };
 
-  getMaxSegmentCount = () => {
+  getMaxSegmentCount = (): number => {
     if (
       this.props.article &&
       this.props.article.result &&
@@ -138,32 +157,23 @@ class VisualizationScreen extends React.Component {
     return MAX_SEGMENTS_SELECTABLE;
   };
 
-  onPartSelect = (part, visibleLinks) => {
+  onPartSelect = (
+    part?: ArticleResult,
+    visibleLinks?: Record<string, number>
+  ): void => {
     this.setState({ selected: part });
-    this.setState({ visibleLinks: visibleLinks });
+    this.setState({ visibleLinks });
   };
 
-  onSegmentCountChange = value => {
+  onSegmentCountChange = (value: number): void => {
     this.setState({ segmentCount: value });
   };
 
-  handleChange(event) {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ [event.target.id]: event.target.value });
-  }
+  };
 
-  handleSubmit(event) {
-    event.preventDefault();
-
-    if (this.props.history) {
-      const encoded = encodeURIComponent(
-        this.state.articleName.replace(" ", "_")
-      );
-      const route = `/visualization/${encoded}`;
-      this.props.history.push(route);
-    }
-  }
-
-  render = () => {
+  render = (): React.ReactNode => {
     return (
       <div className="screen-container">
         <Row className="header-panel header-block">
@@ -171,10 +181,7 @@ class VisualizationScreen extends React.Component {
             <h2>Article: {this.getReadableId(this.props.match.params.id)}</h2>
           </Col>
           <Col xs="12" md="4">
-            <ArticleNameSubmit
-              buttonVariant="primary"
-              history={this.props.history}
-            />
+            <ArticleNameSubmit buttonVariant="primary" {...this.props} />
           </Col>
         </Row>
 

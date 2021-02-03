@@ -5,7 +5,6 @@ import "./SidePanel.scss";
 
 export interface SidePanelProps {
   label: string;
-  children: JSX.Element[];
 }
 
 class SidePanel extends React.Component<SidePanelProps> {

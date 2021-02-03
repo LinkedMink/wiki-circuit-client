@@ -1,11 +1,12 @@
 import { Action } from "redux";
+import { ArticleJob, ArticleJobStart } from "../Constants/Scheduler";
 
 export const SAVE_ARTICLE_DATA = "SAVE_ARTICLE_DATA";
 export type SaveArticleData = "SAVE_ARTICLE_DATA";
 
 export interface ArticleData {
   articleId: string;
-  data: Record<string, unknown>;
+  data: ArticleJob | ArticleJobStart;
 }
 
 export interface ArticleAction extends Action<SaveArticleData> {
@@ -15,7 +16,7 @@ export interface ArticleAction extends Action<SaveArticleData> {
 
 export function saveArticleData(
   articleName: string,
-  data: Record<string, unknown>
+  data: ArticleJob | ArticleJobStart
 ): ArticleAction {
   return {
     type: SAVE_ARTICLE_DATA,

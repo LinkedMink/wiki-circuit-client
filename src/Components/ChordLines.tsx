@@ -3,19 +3,31 @@ import React from "react";
 import { polarToCartesian } from "../Shared/Math";
 
 import "./ChordLines.scss";
+import { SegmentData } from "./ChordPanel";
 
 const STROKE_WIDTH_MULTIPLER = 2;
 const HALF_VIEWPORT = 500;
 const RADIUS = 431;
 
-class ChordLines extends React.Component {
-  getPath = (targetId, index) => {
+export interface ChordLinesProps {
+  segmentId: string;
+  segmentMap: Map<string, SegmentData>;
+  isSelected: boolean;
+  color: string;
+  targetIds: string[];
+}
+
+class ChordLines extends React.Component<ChordLinesProps> {
+  getPath = (targetId: string, index: number): string => {
     if (!this.props.segmentMap || !this.props.segmentId) {
       return "";
     }
 
     const source = this.props.segmentMap.get(this.props.segmentId);
     const target = this.props.segmentMap.get(targetId);
+    if (!source || !target) {
+      return "";
+    }
 
     const halfSourceArcDivision =
       source.arcLength / this.props.targetIds.length / 2;
@@ -45,17 +57,21 @@ class ChordLines extends React.Component {
     return `M ${sourceXY.x} ${sourceXY.y} Q ${HALF_VIEWPORT} ${HALF_VIEWPORT}, ${targetXY.x} ${targetXY.y}`;
   };
 
-  getStrokeWidth = targetId => {
+  getStrokeWidth = (targetId: string): number => {
     if (!this.props.segmentMap || !this.props.segmentId) {
       return STROKE_WIDTH_MULTIPLER;
     }
 
-    const segment = this.props.segmentMap.get(this.props.segmentId).segment;
+    const segment = this.props.segmentMap.get(this.props.segmentId)?.segment;
+    if (!segment) {
+      return STROKE_WIDTH_MULTIPLER;
+    }
+
     const referenceCount = segment.linkedArticles[targetId];
     return referenceCount * STROKE_WIDTH_MULTIPLER;
   };
 
-  getColor = () => {
+  getColor = (): string => {
     if (this.props.isSelected) {
       return "#f0fc03";
     }
@@ -63,7 +79,7 @@ class ChordLines extends React.Component {
     return this.props.color;
   };
 
-  renderPath = (targetId, index) => {
+  renderPath = (targetId: string, index: number): JSX.Element => {
     return (
       <path
         key={index + 1}
@@ -74,7 +90,7 @@ class ChordLines extends React.Component {
     );
   };
 
-  renderPaths = () => {
+  renderPaths = (): JSX.Element[] => {
     if (!this.props.targetIds) {
       return [];
     }
@@ -84,7 +100,7 @@ class ChordLines extends React.Component {
     });
   };
 
-  render = () => {
+  render = (): React.ReactNode => {
     return <g className="chord-line">{this.renderPaths()}</g>;
   };
 }

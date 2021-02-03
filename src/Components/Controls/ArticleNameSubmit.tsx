@@ -3,8 +3,8 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { RouteComponentProps } from "react-router-dom";
 
 export interface ArticleNameSubmitState {
-  [key: string]: unknown;
   articleName: string;
+  [key: string]: unknown;
 }
 
 export interface ArticleNameSubmitProps extends RouteComponentProps {

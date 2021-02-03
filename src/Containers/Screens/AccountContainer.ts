@@ -18,7 +18,7 @@ const EMAIL_VERIFICATION_NEEDED =
   "You will need to verify your email before the next login.";
 const DELETE_SUCCESS = "Your account has been deleted successfully.";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     profile: state.account.profile,
     deleteConfirmResult: state.confirm.inactive
@@ -27,10 +27,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getAccountData: () => {
-      const responseHandler = data => {
+      const responseHandler = (data) => {
         return dispatch(saveAccount(data));
       };
 
@@ -42,7 +42,7 @@ const mapDispatchToProps = dispatch => {
         HttpMethods.GET
       );
     },
-    saveAccountData: properties => {
+    saveAccountData: (properties) => {
       const responseHandler = () => {
         let message = UPDATE_SUCCESS;
         if (properties.email) {

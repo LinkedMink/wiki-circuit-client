@@ -19,14 +19,19 @@ import {
   loadingEnd,
 } from "../Actions/LoadingAction";
 import { JobStatus, MessagePrefixes } from "../Constants/Message";
-import { Services, Routes, ResponseCodes } from "../Constants/Service";
+import {
+  Services,
+  Routes,
+  ResponseCode,
+  ResponseData,
+} from "../Constants/Service";
 import { RootState } from "../Reducers/RootReducer";
 import { Dispatch } from "redux";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentIdProps } from "../Constants/RouteParams";
+import { ArticleJob } from "../Constants/Scheduler";
+import { isString } from "../Shared/TypeCheck";
 
-const JOB_CHECK_INTERVAL = process.env.REACT_APP_JOB_CHECK_INTERVAL
-  ? Number(process.env.REACT_APP_JOB_CHECK_INTERVAL)
-  : 2500;
+const JOB_CHECK_INTERVAL = 2500;
 
 function delay(t: number, ...v: unknown[]) {
   return new Promise(function (resolve) {
@@ -34,36 +39,34 @@ function delay(t: number, ...v: unknown[]) {
   });
 }
 
-interface IdParams {
-  id: string;
-}
-
 const mapStateToProps: MapStateToProps<
   unknown,
-  RouteComponentProps<IdParams>,
+  RouteComponentIdProps,
   RootState
-> = (state: RootState, ownProps: RouteComponentProps<IdParams>) => {
+> = (state: RootState, ownProps: RouteComponentIdProps) => {
   const article = state.article[ownProps.match.params.id];
-  return {
-    article: article,
-  };
+  return { article };
 };
 
 const mapDispatchToProps: MapDispatchToPropsFunction<unknown, unknown> = (
   dispatch: Dispatch
 ) => {
-  const catchHandler = error => {
+  const catchHandler = (error) => {
     dispatch(loadingEnd());
     dispatch(alertError(error.message));
   };
 
   return {
-    getJobStatusToStore: (articleName, progress) => {
+    getJobStatusToStore: (articleName: string, progress: number) => {
       dispatch(loadingStart(true));
       dispatch(loadingReport(Math.ceil(progress * 100)));
 
-      const responseHandler = json => {
-        if (!json) {
+      const responseHandler = (json: ResponseData<ArticleJob | string>) => {
+        if (isString(json.data)) {
+          if (json.data.startsWith(MessagePrefixes.NO_JOB)) {
+            dispatch(loadingEnd());
+            dispatch(alertError("Job doesn't exist on the server"));
+          }
           return;
         }
 
@@ -74,12 +77,6 @@ const mapDispatchToProps: MapDispatchToPropsFunction<unknown, unknown> = (
           dispatch(saveArticleData(articleName, json.data));
           dispatch(loadingEnd());
           dispatch(alertError("Job failed mid-operation, check server logs"));
-        } else if (
-          json.data.startsWith &&
-          json.data.startsWith(MessagePrefixes.NO_JOB)
-        ) {
-          dispatch(loadingEnd());
-          dispatch(alertError("Job doesn't exist on the server"));
         } else {
           dispatch(saveArticleData(articleName, json.data));
         }
@@ -93,20 +90,16 @@ const mapDispatchToProps: MapDispatchToPropsFunction<unknown, unknown> = (
 
       return delay(JOB_CHECK_INTERVAL).then(() => {
         return fetch(url, options)
-          .then(response => response.json())
+          .then((response) => response.json())
           .then(responseHandler)
           .catch(catchHandler);
       });
     },
-    getVisualizationDataToStore: articleName => {
+    getVisualizationDataToStore: (articleName: string) => {
       dispatch(loadingStart(true));
 
-      const responseHandler = json => {
-        if (json && json.status === ResponseCodes.SUCCESS) {
-          return dispatch(
-            saveArticleData(articleName, { progress: { completed: 0 } })
-          );
-        } else if (json && json.data && json.data.startsWith) {
+      const responseHandler = (json: ResponseData<ArticleJob | string>) => {
+        if (isString(json.data)) {
           if (
             json.data.startsWith(MessagePrefixes.IN_CACHE) ||
             json.data.startsWith(MessagePrefixes.JOB_STARTED)
@@ -115,8 +108,15 @@ const mapDispatchToProps: MapDispatchToPropsFunction<unknown, unknown> = (
               saveArticleData(articleName, { progress: { completed: 0 } })
             );
           }
+
           dispatch(loadingEnd());
           return dispatch(alertError(json.data));
+        }
+
+        if (json.status === ResponseCode.SUCCESS) {
+          return dispatch(
+            saveArticleData(articleName, { progress: { completed: 0 } })
+          );
         } else {
           dispatch(loadingEnd());
           return dispatch(alertError("Failed to start job"));
@@ -130,7 +130,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<unknown, unknown> = (
       const options = getRequestOptions(HttpMethods.POST, { id: articleName });
 
       return fetch(url, options)
-        .then(response => response.json())
+        .then((response) => response.json())
         .then(responseHandler)
         .catch(catchHandler);
     },

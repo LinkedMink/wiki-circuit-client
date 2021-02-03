@@ -1,14 +1,21 @@
 import { connect, MapStateToProps } from "react-redux";
 
-import LoadingOverlay from "../Components/LoadingOverlay";
+import LoadingOverlay, {
+  LoadingOverlayaProps,
+} from "../Components/LoadingOverlay";
 import { RootState } from "../Reducers/RootReducer";
 
-const mapStateToProps: MapStateToProps<unknown, unknown, RootState> = (
-  state: RootState
-) => {
+const mapStateToProps: MapStateToProps<
+  LoadingOverlayaProps,
+  unknown,
+  RootState
+> = (state: RootState) => {
   return {
     isLoading: state.loading.isLoading,
-    percentComplete: state.loading.percentComplete,
+    percentComplete:
+      state.loading.percentComplete === null
+        ? undefined
+        : state.loading.percentComplete,
     message: state.loading.message,
   };
 };

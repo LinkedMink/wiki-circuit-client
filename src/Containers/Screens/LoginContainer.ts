@@ -6,13 +6,13 @@ import { HttpMethods, getJsonResponse } from "../../Shared/RequestFactory";
 import LoginScreen from "../../Components/Screens/LoginScreen";
 import { saveSession } from "../../Actions/AccountAction";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.account.token ? true : false,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     login: (email, password, rememberMe) => {
       const requestData = {
@@ -20,7 +20,7 @@ const mapDispatchToProps = dispatch => {
         password,
       };
 
-      const responseHandler = data => {
+      const responseHandler = (data) => {
         localStorage.removeItem(StorageKey.JWT_TOKEN);
         if (rememberMe) {
           localStorage.setItem(StorageKey.JWT_TOKEN, data.token);

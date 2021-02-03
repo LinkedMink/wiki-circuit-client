@@ -5,13 +5,14 @@ import {
   RouteComponentProps,
   RouteProps,
 } from "react-router-dom";
+import { Claim } from "../Constants/Account";
 
 export interface RouteAuthProps extends RouteProps {
   isLoggedIn?: boolean;
-  requiredClaim?: string;
-  claims?: string[];
+  requiredClaim?: Claim;
+  claims?: Set<Claim>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  component: any;
+  component?: any;
 }
 
 class RouteAuth extends React.Component<RouteAuthProps> {
@@ -22,7 +23,6 @@ class RouteAuth extends React.Component<RouteAuthProps> {
   }
 
   getNoComponentProps(props: RouteAuthProps): Partial<RouteAuthProps> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { component: Component, ...rest } = props;
     return rest;
   }
@@ -31,7 +31,7 @@ class RouteAuth extends React.Component<RouteAuthProps> {
     return (
       !this.props.requiredClaim ||
       !this.props.claims ||
-      this.props.claims.indexOf(this.props.requiredClaim) >= 0
+      this.props.claims.has(this.props.requiredClaim)
     );
   }
 

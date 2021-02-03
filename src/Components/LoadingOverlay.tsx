@@ -1,10 +1,18 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { ProgressBar } from "react-bootstrap";
 
 import "./LoadingOverlay.scss";
 
-class LoadingOverlay extends React.Component {
-  constructor(props) {
+export interface LoadingOverlayaProps {
+  isLoading: boolean;
+  percentComplete?: number;
+  message?: string;
+}
+
+class LoadingOverlay extends React.Component<LoadingOverlayaProps> {
+  private readonly styles: Record<string, CSSProperties>;
+
+  constructor(props: LoadingOverlayaProps) {
     super(props);
 
     this.styles = {
@@ -19,7 +27,7 @@ class LoadingOverlay extends React.Component {
     };
   }
 
-  getOverlayStyle() {
+  getOverlayStyle(): CSSProperties {
     if (this.props.isLoading) {
       return this.styles.visible;
     } else {
@@ -27,12 +35,19 @@ class LoadingOverlay extends React.Component {
     }
   }
 
-  renderLoadingAnimation() {
+  renderLoadingAnimation(): JSX.Element {
     if (Number.isInteger(this.props.percentComplete)) {
       return (
         <div>
           <div>
-            <ProgressBar animated now={this.props.percentComplete} />
+            <ProgressBar
+              animated
+              now={
+                this.props.percentComplete
+                  ? this.props.percentComplete
+                  : undefined
+              }
+            />
             <span>{this.props.message}</span>
             <span>{this.props.percentComplete}%</span>
           </div>
@@ -49,7 +64,7 @@ class LoadingOverlay extends React.Component {
     }
   }
 
-  render() {
+  render(): React.ReactNode {
     return (
       <div className="loading-overlay" style={this.getOverlayStyle()}>
         {this.renderLoadingAnimation()}

@@ -6,12 +6,12 @@ import { isMap } from "../Shared/TypeCheck";
 import "./StatPanel.scss";
 
 export interface StatPanelProps {
-  label: string;
-  data: Map<string, string | unknown>;
+  label?: string;
+  data: Map<string, unknown>;
 }
 
 class StatPanel extends React.Component<StatPanelProps> {
-  getListFromMap = (map: Map<string, string | unknown>): JSX.Element[] => {
+  getListFromMap = (map: Map<string, unknown>): JSX.Element[] => {
     const output: JSX.Element[] = [];
 
     for (const entry of map) {

@@ -1,20 +1,27 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 
-class DialogPanel extends React.Component {
-  constructor(props) {
+export interface DialogPanelProps {
+  title?: string;
+  text?: string;
+  show?: boolean;
+  close?: () => void;
+}
+
+class DialogPanel extends React.Component<DialogPanelProps> {
+  constructor(props: DialogPanelProps) {
     super(props);
 
     this.handleClose = this.handleClose.bind(this);
   }
 
-  handleClose() {
+  handleClose(): void {
     if (this.props.close) {
       this.props.close();
     }
   }
 
-  render() {
+  render(): React.ReactNode {
     return (
       <Modal onHide={this.handleClose} show={this.props.show}>
         <Modal.Header closeButton>

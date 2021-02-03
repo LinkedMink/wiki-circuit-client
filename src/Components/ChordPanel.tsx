@@ -1,18 +1,44 @@
-import React from "react";
+import { Property } from "csstype";
+import React, { CSSProperties } from "react";
 
 import ChordSegment from "./ChordSegment";
 import { ratioToRadians } from "../Shared/Math";
 
 import "./ChordPanel.scss";
+import { ArticleResult } from "../Constants/Scheduler";
 
 const SEGMENT_ID_PREFIX = "segment";
 const DEFAULT_SEGMENT_COUNT = 30;
 const DIAGRAM_PADDING = 40;
 
-class ChordPanel extends React.Component {
-  containerElement = React.createRef();
+export interface SegmentData {
+  segment: ArticleResult;
+  index: number;
+  startAngle: number;
+  arcLength: number;
+}
 
-  constructor(props) {
+export interface ChordPanelProps {
+  data: ArticleResult[];
+  segmentCount: number;
+  onPartSelect: (
+    part?: ArticleResult,
+    visibleLinks?: Record<string, number>
+  ) => void;
+}
+
+export interface ChordPanelState {
+  selected?: string;
+  width?: Property.Width;
+  height?: Property.Height;
+}
+
+class ChordPanel extends React.Component<ChordPanelProps, ChordPanelState> {
+  private readonly containerElement = React.createRef<HTMLDivElement>();
+  private segmentMap: Map<string, SegmentData>;
+  private segmentArticles: ArticleResult[];
+
+  constructor(props: ChordPanelProps) {
     super(props);
 
     this.state = {
@@ -22,11 +48,11 @@ class ChordPanel extends React.Component {
     };
   }
 
-  isSegmentSelected = id => {
+  isSegmentSelected = (id: string): boolean => {
     return this.state.selected === id;
   };
 
-  getOutlineClass = () => {
+  getOutlineClass = (): string => {
     if (this.state.selected === undefined) {
       return "outline";
     } else {
@@ -34,27 +60,27 @@ class ChordPanel extends React.Component {
     }
   };
 
-  getStyle = () => {
+  getStyle = (): CSSProperties => {
     return {
       width: this.state.width,
       height: this.state.height,
     };
   };
 
-  updateDimensions = () => {
+  updateDimensions = (): void => {
     if (this.containerElement.current) {
       const dimensions = this.containerElement.current.getBoundingClientRect();
 
       if (dimensions.height > dimensions.width) {
         this.setState({
-          width: dimensions.width - DIAGRAM_PADDING,
+          width: (dimensions.width - DIAGRAM_PADDING).toString(),
           height: undefined,
         });
         return;
       } else {
         this.setState({
           width: undefined,
-          height: dimensions.height - DIAGRAM_PADDING,
+          height: (dimensions.height - DIAGRAM_PADDING).toString(),
         });
         return;
       }
@@ -63,23 +89,26 @@ class ChordPanel extends React.Component {
     this.setState({ width: "60%", height: undefined });
   };
 
-  onSegmentSelect = (segment, id) => {
+  onSegmentSelect = (segment: ArticleResult, id: string): void => {
     if (this.props.onPartSelect) {
-      const visibleLinks = {};
-      const articles = this.segmentMap.get(id).segment.linkedArticles;
-      Object.keys(articles).forEach(article => {
-        if (this.segmentMap.has(article)) {
-          visibleLinks[article] = articles[article];
-        }
-      });
+      const visibleLinks: Record<string, number> = {};
+      const articles = this.segmentMap.get(id)?.segment.linkedArticles;
 
-      this.props.onPartSelect(segment, visibleLinks);
+      if (articles) {
+        Object.keys(articles).forEach((article) => {
+          if (this.segmentMap.has(article)) {
+            visibleLinks[article] = articles[article];
+          }
+        });
+
+        this.props.onPartSelect(segment, visibleLinks);
+      }
     }
 
     this.setState({ selected: id });
   };
 
-  handleRimClick = () => {
+  handleRimClick = (event: React.MouseEvent): void => {
     if (this.props.onPartSelect) {
       this.props.onPartSelect();
     }
@@ -87,16 +116,20 @@ class ChordPanel extends React.Component {
     this.setState({ selected: undefined });
   };
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener("resize", this.updateDimensions);
   }
 
-  renderSegment = (index, id, segmentMap) => {
+  renderSegment = (
+    index: number,
+    id: string,
+    segmentMap: Map<string, SegmentData>
+  ): JSX.Element => {
     return (
       <ChordSegment
         key={index + 1}
@@ -108,13 +141,13 @@ class ChordPanel extends React.Component {
     );
   };
 
-  renderOverlay = () => {
+  renderOverlay = (): JSX.Element | void => {
     if (this.state.selected) {
       return <use xlinkHref={`#${SEGMENT_ID_PREFIX}${this.state.selected}`} />;
     }
   };
 
-  renderSegments = () => {
+  renderSegments = (): JSX.Element[] | void => {
     if (!this.props.data) {
       return;
     }
@@ -122,16 +155,16 @@ class ChordPanel extends React.Component {
     const segmentCount = this.props.segmentCount
       ? this.props.segmentCount
       : DEFAULT_SEGMENT_COUNT;
-    this.segmentData = this.props.data.slice(0, segmentCount);
+    this.segmentArticles = this.props.data.slice(0, segmentCount);
 
     let referencesTotal = 0;
-    this.segmentData.forEach(element => {
+    this.segmentArticles.forEach((element) => {
       referencesTotal += element.referenceCount;
     });
 
     let referencesToSegment = 0;
-    this.segmentMap = new Map();
-    this.segmentData.forEach((segment, index) => {
+    this.segmentMap = new Map<string, SegmentData>();
+    this.segmentArticles.forEach((segment, index) => {
       this.segmentMap.set(segment.id, {
         segment: segment,
         index: index,
@@ -142,12 +175,12 @@ class ChordPanel extends React.Component {
       referencesToSegment += segment.referenceCount;
     });
 
-    return this.segmentData.map((segment, index) =>
+    return this.segmentArticles.map((segment, index) =>
       this.renderSegment(index, segment.id, this.segmentMap)
     );
   };
 
-  render = () => {
+  render = (): React.ReactNode => {
     return (
       <div className="chord-diagram" ref={this.containerElement}>
         <svg style={this.getStyle()} viewBox="0 0 1000 1000">

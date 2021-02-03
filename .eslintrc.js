@@ -55,6 +55,9 @@ module.exports = {
         "prettier/react",
         "prettier/@typescript-eslint",
       ],
+      rules: {
+        "@typescript-eslint/no-unused-vars": "off",
+      }
     },
   ],
 };

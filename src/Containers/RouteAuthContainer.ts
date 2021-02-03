@@ -1,17 +1,16 @@
 import { connect, MapStateToProps } from "react-redux";
 
-import RouteAuth from "../Components/RouteAuth";
+import RouteAuth, { RouteAuthProps } from "../Components/RouteAuth";
 import { RootState } from "../Reducers/RootReducer";
 
-const mapStateToProps: MapStateToProps<unknown, unknown, RootState> = (
-  state: RootState
-) => {
+const mapStateToProps: MapStateToProps<
+  RouteAuthProps,
+  RouteAuthProps,
+  RootState
+> = (state: RootState) => {
   return {
     isLoggedIn: state.account.jwtToken ? true : false,
-    claims:
-      state.account.decodedToken && state.account.decodedToken.claims
-        ? state.account.decodedToken.claims
-        : [],
+    claims: state.account.decodedToken?.claims,
   };
 };
 

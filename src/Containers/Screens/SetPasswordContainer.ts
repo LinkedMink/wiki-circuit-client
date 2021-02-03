@@ -7,13 +7,13 @@ import { alertRedirect } from "../../Actions/AlertAction";
 
 const SUCCESS_MESSAGE = "Your password has been reset.";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.account.token ? true : false,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     resetPassword: (email, resetToken, password) => {
       const requestData = {

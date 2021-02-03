@@ -8,15 +8,15 @@ import { alertRedirect } from "../../Actions/AlertAction";
 
 const SUCCESS_MESSAGE = "A reset link has been sent. Check your email.";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.account.token ? true : false,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    getResetLink: email => {
+    getResetLink: (email) => {
       const responseHandler = () => {
         return dispatch(alertRedirect(SUCCESS_MESSAGE, "/login"));
       };

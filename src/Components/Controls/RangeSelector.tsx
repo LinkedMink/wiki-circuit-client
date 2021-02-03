@@ -13,10 +13,10 @@ export interface RangeSelectorState {
 export interface RangeSelectorProps {
   min: number;
   max: number;
-  step: number;
+  step?: number;
   label: string;
   tooltip: string;
-  onValueChange: (selected: string) => void;
+  onValueChange: (selected: number) => void;
 }
 
 class RangeSelector extends React.Component<
@@ -37,7 +37,7 @@ class RangeSelector extends React.Component<
   handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ selectedValue: event.target.value });
     if (this.props.onValueChange) {
-      this.props.onValueChange(event.target.value);
+      this.props.onValueChange(Number(event.target.value));
     }
   };
 

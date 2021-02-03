@@ -26,9 +26,14 @@ export const Routes: ServiceRouteMap = {
   },
 };
 
-export enum ResponseCodes {
+export enum ResponseCode {
   SUCCESS = 0,
   FAILED = 1,
   REQUEST_VALIDATION = 10,
   DATA_VALIDATION = 11,
+}
+
+export interface ResponseData<T> {
+  status: ResponseCode;
+  data: T;
 }

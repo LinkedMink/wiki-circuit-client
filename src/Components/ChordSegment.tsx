@@ -1,9 +1,11 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 
 import ChordLines from "./ChordLines";
+import { SegmentData } from "./ChordPanel";
 import { polarToCartesian, radiansToDegrees } from "../Shared/Math";
 
 import "./ChordSegment.scss";
+import { ArticleResult } from "../Constants/Scheduler";
 
 const SEGMENT_ID_PREFIX = "segment";
 
@@ -16,8 +18,15 @@ const RADIUS_OUTER = 500;
 const RADIUS_INNER = 451;
 const HALF_BLOCK_WIDTH = 20;
 
-class ChordSegment extends React.Component {
-  getSelectedStyle = () => {
+export interface ChordSegmentProps {
+  id: string;
+  data: Map<string, SegmentData>;
+  isSelected: boolean;
+  onSegmentSelect: (segment: ArticleResult, id: string) => void;
+}
+
+class ChordSegment extends React.Component<ChordSegmentProps> {
+  getSelectedStyle = (): CSSProperties => {
     if (this.props.isSelected) {
       return { stroke: "#f0fc03", strokeWidth: 10 };
     } else {
@@ -25,7 +34,7 @@ class ChordSegment extends React.Component {
     }
   };
 
-  getColor = index => {
+  getColor = (index: number): string => {
     const triadIndex = index % 3;
     const steps = Math.floor(index / 3);
 
@@ -47,28 +56,38 @@ class ChordSegment extends React.Component {
     return `rgb(${colorR}, ${colorG}, ${colorB})`;
   };
 
-  getArcPath = (x, y, radius, startAngle, endAngle) => {
-    var start = polarToCartesian(x, y, radius, endAngle);
-    var end = polarToCartesian(x, y, radius, startAngle);
+  getArcPath = (
+    x: number,
+    y: number,
+    radius: number,
+    startAngle: number,
+    endAngle: number
+  ): string => {
+    const start = polarToCartesian(x, y, radius, endAngle);
+    const end = polarToCartesian(x, y, radius, startAngle);
 
-    var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
     return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`;
   };
 
-  handleSegmentClick = event => {
-    const segment = this.props.data.get(this.props.id).segment;
-    if (this.props.onSegmentSelect) {
+  handleSegmentClick = (event: React.MouseEvent): void => {
+    const segment = this.props.data.get(this.props.id)?.segment;
+    if (this.props.onSegmentSelect && segment) {
       this.props.onSegmentSelect(segment, this.props.id);
     }
   };
 
-  render = () => {
+  render = (): React.ReactNode => {
     if (!this.props.data || this.props.id === undefined) {
       return <g className="chord-segment"></g>;
     }
 
     const segmentData = this.props.data.get(this.props.id);
+    if (!segmentData) {
+      return <g className="chord-segment"></g>;
+    }
+
     const arcLength = segmentData.arcLength;
     const startAngle = radiansToDegrees(segmentData.startAngle);
     const transform = `rotate(${startAngle} ${RADIUS_OUTER} ${RADIUS_OUTER})`;
@@ -79,7 +98,7 @@ class ChordSegment extends React.Component {
     const color = this.getColor(segmentData.index);
 
     const targetIds = Object.keys(segmentData.segment.linkedArticles).filter(
-      article => {
+      (article) => {
         return this.props.data.has(article);
       }
     );

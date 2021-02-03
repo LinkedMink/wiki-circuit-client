@@ -4,12 +4,23 @@ import { LinkContainer } from "react-router-bootstrap";
 
 import "./NavigationMenu.scss";
 
-class NavigationMenu extends React.Component {
-  getIconClass(icon) {
+export interface NavLink {
+  path: string;
+  name: string;
+  icon: string;
+  disabled: boolean;
+}
+
+export interface NavigationMenuProps {
+  links: NavLink[];
+}
+
+class NavigationMenu extends React.Component<NavigationMenuProps> {
+  getIconClass(icon: string): string {
     return `oi oi-${icon}`;
   }
 
-  render() {
+  render(): React.ReactNode {
     return (
       <Nav defaultActiveKey="/home" className="flex-column navigation-panel">
         {this.props.links.map((value, index) => {
