@@ -12,6 +12,9 @@ import { saveConfig } from "./Actions/ConfigAction";
 import { saveSession } from "./Actions/AccountAction";
 import { Routes, Services } from "./Constants/Service";
 import { RootState } from "./Reducers/RootReducer";
+import { decodeToken } from "./Shared/Token";
+import { alertError } from "./Actions/AlertAction";
+import { Account } from "./Constants/Message";
 
 const mapStateToProps: MapStateToProps<AppStateProps, unknown, RootState> = (
   state: RootState
@@ -47,9 +50,17 @@ const mapDispatchToProps: MapDispatchToPropsFunction<
     },
     getAccount: () => {
       const token = localStorage.getItem(StorageKey.JWT_TOKEN);
-      if (token) {
-        return dispatch(saveSession(token));
+      if (!token) {
+        return;
       }
+
+      const decoded = decodeToken(token);
+      if (decoded === null) {
+        localStorage.removeItem(StorageKey.JWT_TOKEN);
+        return dispatch(alertError(Account.SESSION_ERROR));
+      }
+
+      return dispatch(saveSession(token, decoded));
     },
   };
 };

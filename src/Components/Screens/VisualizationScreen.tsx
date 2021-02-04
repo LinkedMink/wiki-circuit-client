@@ -174,8 +174,23 @@ class VisualizationScreen extends React.Component<
   };
 
   render = (): React.ReactNode => {
+    if (!this.props.match.params.id) {
+      return (
+        <div className="home-container">
+          <Row className="justify-content-md-center">
+            <Col className="home-submit" xs="11" sm="10" md="9" lg="8" xl="6">
+              <div>
+                <h2>Analyze Article</h2>
+              </div>
+              <ArticleNameSubmit {...this.props} />
+            </Col>
+          </Row>
+        </div>
+      );
+    }
+
     return (
-      <div className="screen-container">
+      <div className="full-container">
         <Row className="header-panel header-block">
           <Col xs="12" md="8">
             <h2>Article: {this.getReadableId(this.props.match.params.id)}</h2>

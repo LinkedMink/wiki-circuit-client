@@ -4,6 +4,16 @@ export enum Claim {
 
 export const MIN_PASSWORD_LENGTH = 8;
 
+export interface JwtPayload {
+  aud: string;
+  claims: Set<Claim>;
+  email: string;
+  exp: number;
+  iat: number;
+  iss: string;
+  sub: string;
+}
+
 export interface TrackedEntityModel {
   id?: string;
   createdDate?: Date;

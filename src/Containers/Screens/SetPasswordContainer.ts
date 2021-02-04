@@ -9,7 +9,7 @@ const SUCCESS_MESSAGE = "Your password has been reset.";
 
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.account.token ? true : false,
+    isLoggedIn: state.account.jwtToken ? true : false,
   };
 };
 

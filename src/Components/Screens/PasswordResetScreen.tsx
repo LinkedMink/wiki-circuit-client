@@ -3,7 +3,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { Redirect, Link as RouterLink, Link } from "react-router-dom";
 
 import {
-  FieldResult,
+  FormComponentState,
   ValidationRules,
   ValidationRuleType,
   Validator,
@@ -18,15 +18,8 @@ export interface PasswordResetScreenFields {
   email: string;
 }
 
-export interface PasswordResetScreenState extends PasswordResetScreenFields {
-  errors: PasswordResetScreenErrors;
-  [key: string]: unknown;
-}
-
-type PasswordResetScreenErrors = Record<
-  keyof PasswordResetScreenFields,
-  FieldResult | never
->;
+export type PasswordResetScreenState = PasswordResetScreenFields &
+  FormComponentState<PasswordResetScreenFields>;
 
 const validationRules: ValidationRules<PasswordResetScreenFields> = {
   email: {
@@ -43,10 +36,13 @@ class PasswordResetScreen extends React.Component<
     validationRules
   );
 
-  state = {
-    email: "",
-    errors: this.validator.getDefaultErrorState(),
-  };
+  constructor(props: PasswordResetScreenProps) {
+    super(props);
+    this.state = {
+      email: "",
+      errors: this.validator.getDefaultErrorState(),
+    };
+  }
 
   getLinkReference = (
     path: string
@@ -68,7 +64,7 @@ class PasswordResetScreen extends React.Component<
     event.preventDefault();
 
     const validationState = this.validator.validate(this.state);
-    this.setState({ errors: validationState.errors });
+    this.setState({ ...validationState });
 
     if (validationState.isValid && this.props.getResetLink) {
       this.props.getResetLink(this.state.email);
@@ -82,12 +78,10 @@ class PasswordResetScreen extends React.Component<
 
     return (
       <div className="screen-container">
-        <Row className="header-block">
-          <h2>Reset Password</h2>
-        </Row>
+        <h2>Reset Password</h2>
         <Form
           onSubmit={this.handleSubmit}
-          validated={!!this.state.errors}
+          validated={this.state.isValid !== undefined}
           noValidate
         >
           <Form.Group controlId="email">
@@ -101,17 +95,17 @@ class PasswordResetScreen extends React.Component<
               required
               autoFocus
             />
-            <Form.Control.Feedback
-              type={this.state.errors.email.isInvalid ? "invalid" : "valid"}
-            >
-              {this.state.errors.email.message}
-            </Form.Control.Feedback>
+            {this.state.errors.email.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.email.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Button variant="primary" type="submit">
             Send Reset Link
           </Button>
         </Form>
-        <Row>
+        <Row className="form-post-links">
           <Col>
             <Link to="/login">{"Already know your password? Login"}</Link>
           </Col>

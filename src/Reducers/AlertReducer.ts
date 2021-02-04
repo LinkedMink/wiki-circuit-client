@@ -7,6 +7,7 @@ import {
 
 export enum AlertSeverity {
   NONE = "None",
+  SUCCESS = "Success",
   INFO = "Info",
   ERROR = "Error",
 }
@@ -41,10 +42,16 @@ const accountReducer: Reducer<AlertReduced, AlertAction> = (
       message: action.payload,
       redirect: undefined,
     });
+  } else if (action.type === AlertActionType.Success) {
+    return Object.assign({}, state, {
+      severity: AlertSeverity.SUCCESS,
+      message: action.payload,
+      redirect: undefined,
+    });
   } else if (action.type === AlertActionType.Redirect) {
     const alert = action.payload as AlertRedirect;
     return Object.assign({}, state, {
-      severity: AlertSeverity.ERROR,
+      severity: alert.severity ? alert.severity : AlertSeverity.INFO,
       message: alert.message,
       redirect: alert.path,
     });

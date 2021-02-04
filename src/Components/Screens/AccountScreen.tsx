@@ -4,6 +4,7 @@ import { Button, Form, Row } from "react-bootstrap";
 import { AccountModel, MIN_PASSWORD_LENGTH } from "../../Constants/Account";
 import {
   FieldResult,
+  FormComponentState,
   ValidationRules,
   ValidationRuleType,
   Validator,
@@ -25,17 +26,12 @@ export interface AccountScreenFields {
   confirmPassword: string;
 }
 
-export interface AccountScreenState extends AccountScreenFields {
+export interface AccountScreenState
+  extends AccountScreenFields,
+    FormComponentState<AccountScreenFields> {
   hasRetreivedProfile: boolean;
   formIsNotDirty: boolean;
-  errors: AccountScreenErrors;
-  [key: string]: unknown;
 }
-
-type AccountScreenErrors = Record<
-  keyof AccountScreenFields,
-  FieldResult | never
->;
 
 const validationRules: ValidationRules<AccountScreenFields> = {
   email: {
@@ -60,14 +56,17 @@ class AccountScreen extends React.Component<
     validationRules
   );
 
-  state = {
-    email: "",
-    password: "",
-    confirmPassword: "",
-    hasRetreivedProfile: false,
-    formIsNotDirty: false,
-    errors: this.validator.getDefaultErrorState(),
-  };
+  constructor(props: AccountScreenProps) {
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      hasRetreivedProfile: false,
+      formIsNotDirty: false,
+      errors: this.validator.getDefaultErrorState(),
+    };
+  }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ [event.target.id]: event.target.value });
@@ -89,7 +88,7 @@ class AccountScreen extends React.Component<
     }
 
     const validationState = this.validator.validate(this.state);
-    this.setState({ errors: validationState.errors });
+    this.setState({ ...validationState });
 
     if (validationState.isValid && this.props.saveAccountData) {
       this.props.saveAccountData(dirtyProperties);
@@ -151,12 +150,10 @@ class AccountScreen extends React.Component<
   render = (): React.ReactNode => {
     return (
       <div className="screen-container">
-        <Row className="header-block">
-          <h2>Account</h2>
-        </Row>
+        <h2>Account</h2>
         <Form
           onSubmit={this.handleSubmit}
-          validated={!!this.state.errors}
+          validated={this.state.isValid !== undefined}
           noValidate
         >
           <Form.Group controlId="email">
@@ -168,11 +165,11 @@ class AccountScreen extends React.Component<
               value={this.state.email}
               placeholder="name@example.com"
             />
-            <Form.Control.Feedback
-              type={this.state.errors.email.isInvalid ? "invalid" : "valid"}
-            >
-              {this.state.errors.email.message}
-            </Form.Control.Feedback>
+            {this.state.errors.email.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.email.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Form.Group controlId="password">
             <Form.Label>{validationRules.password.label}</Form.Label>
@@ -182,11 +179,11 @@ class AccountScreen extends React.Component<
               onChange={this.handleChange}
               value={this.state.password}
             />
-            <Form.Control.Feedback
-              type={this.state.errors.password.isInvalid ? "invalid" : "valid"}
-            >
-              {this.state.errors.password.message}
-            </Form.Control.Feedback>
+            {this.state.errors.password.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.password.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Form.Group controlId="confirmPassword">
             <Form.Label>{validationRules.confirmPassword.label}</Form.Label>
@@ -195,21 +192,17 @@ class AccountScreen extends React.Component<
               onChange={this.handleChange}
               value={this.state.confirmPassword}
             />
-            <Form.Control.Feedback
-              type={
-                this.state.errors.confirmPassword.isInvalid
-                  ? "invalid"
-                  : "valid"
-              }
-            >
-              {this.state.errors.confirmPassword.message}
-            </Form.Control.Feedback>
+            {this.state.errors.confirmPassword.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.confirmPassword.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Button variant="primary" type="submit" disabled={!this.isDirty()}>
             Save
           </Button>
         </Form>
-        <h3>Delete</h3>
+        <h3 className="form-post-links">Delete</h3>
         <Button variant="danger" onClick={this.handleDelete}>
           Delete Account
         </Button>

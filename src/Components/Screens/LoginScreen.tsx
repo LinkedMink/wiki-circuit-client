@@ -1,9 +1,8 @@
 import * as React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { Redirect, Link as RouterLink, Link } from "react-router-dom";
-
 import {
-  FieldResult,
+  FormComponentState,
   ValidationRules,
   ValidationRuleType,
   Validator,
@@ -20,12 +19,8 @@ export interface LoginScreenFields {
   rememberMe: boolean;
 }
 
-export interface LoginScreenState extends LoginScreenFields {
-  errors: LoginScreenErrors;
-  [key: string]: unknown;
-}
-
-type LoginScreenErrors = Record<keyof LoginScreenFields, FieldResult | never>;
+export type LoginScreenState = LoginScreenFields &
+  FormComponentState<LoginScreenFields>;
 
 const validationRules: ValidationRules<LoginScreenFields> = {
   email: {
@@ -47,12 +42,15 @@ class LoginScreen extends React.Component<LoginScreenProps, LoginScreenState> {
     validationRules
   );
 
-  state = {
-    email: "",
-    password: "",
-    rememberMe: false,
-    errors: this.validator.getDefaultErrorState(),
-  };
+  constructor(props: LoginScreenProps) {
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+      rememberMe: false,
+      errors: this.validator.getDefaultErrorState(),
+    };
+  }
 
   getLinkReference = (
     path: string
@@ -74,7 +72,7 @@ class LoginScreen extends React.Component<LoginScreenProps, LoginScreenState> {
     event.preventDefault();
 
     const validationState = this.validator.validate(this.state);
-    this.setState({ errors: validationState.errors });
+    this.setState({ ...validationState });
 
     if (validationState.isValid && this.props.login) {
       this.props.login(
@@ -92,12 +90,10 @@ class LoginScreen extends React.Component<LoginScreenProps, LoginScreenState> {
 
     return (
       <div className="screen-container">
-        <Row className="header-block">
-          <h2>Login</h2>
-        </Row>
+        <h2>Login</h2>
         <Form
           onSubmit={this.handleSubmit}
-          validated={!!this.state.errors}
+          validated={this.state.isValid !== undefined}
           noValidate
         >
           <Form.Group controlId="email">
@@ -111,11 +107,11 @@ class LoginScreen extends React.Component<LoginScreenProps, LoginScreenState> {
               required
               autoFocus
             />
-            <Form.Control.Feedback
-              type={this.state.errors.email.isInvalid ? "invalid" : "valid"}
-            >
-              {this.state.errors.email.message}
-            </Form.Control.Feedback>
+            {this.state.errors.email.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.email.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Form.Group controlId="password">
             <Form.Label>{validationRules.password.label}</Form.Label>
@@ -126,11 +122,11 @@ class LoginScreen extends React.Component<LoginScreenProps, LoginScreenState> {
               value={this.state.password}
               required
             />
-            <Form.Control.Feedback
-              type={this.state.errors.password.isInvalid ? "invalid" : "valid"}
-            >
-              {this.state.errors.password.message}
-            </Form.Control.Feedback>
+            {this.state.errors.password.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.password.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Form.Group controlId="rememberMe">
             <Form.Check
@@ -143,11 +139,11 @@ class LoginScreen extends React.Component<LoginScreenProps, LoginScreenState> {
             Sign In
           </Button>
         </Form>
-        <Row>
-          <Col>
+        <Row className="form-post-links">
+          <Col xs="12">
             <Link to="/password-reset">Forgot password?</Link>
           </Col>
-          <Col>
+          <Col xs="12">
             <Link to="/register">{"Don't have an account? Sign Up"}</Link>
           </Col>
         </Row>

@@ -1,13 +1,11 @@
 import * as React from "react";
-import { Row } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 
 class AboutScreen extends React.Component {
   render(): React.ReactNode {
     return (
       <div className="screen-container">
-        <Row className="header-block">
-          <h2>About</h2>
-        </Row>
+        <h2>About</h2>
         <p>
           Wiki Circuit allows users to analyze connectivity between Wikipedia
           articles. The application downloads an initial input article. From
@@ -41,9 +39,7 @@ class AboutScreen extends React.Component {
           written mainly to demonstrate the various technologies used to build
           the software.
         </p>
-        <Row className="header-block content-block">
-          <h4>Contact</h4>
-        </Row>
+        <h4>Contact</h4>
         <p>
           Email:{" "}
           <a href="mailto:harlan@linkedmink.space">harlan@linkedmink.space</a>

@@ -3,6 +3,7 @@ import { Redirect, Link as RouterLink, Link } from "react-router-dom";
 
 import {
   FieldResult,
+  FormComponentState,
   ValidationRules,
   ValidationRuleType,
   Validator,
@@ -20,15 +21,8 @@ export interface SetPasswordScreenFields {
   confirmPassword: string;
 }
 
-export interface SetPasswordScreenState extends SetPasswordScreenFields {
-  errors: SetPasswordScreenErrors;
-  [key: string]: unknown;
-}
-
-export type SetPasswordScreenErrors = Record<
-  keyof SetPasswordScreenFields,
-  FieldResult | never
->;
+export type SetPasswordScreenState = SetPasswordScreenFields &
+  FormComponentState<SetPasswordScreenFields>;
 
 const validationRules: ValidationRules<SetPasswordScreenFields> = {
   password: {
@@ -52,11 +46,14 @@ class SetPasswordScreen extends React.Component<
     validationRules
   );
 
-  state = {
-    password: "",
-    confirmPassword: "",
-    errors: this.validator.getDefaultErrorState(),
-  };
+  constructor(props: SetPasswordScreenProps) {
+    super(props);
+    this.state = {
+      password: "",
+      confirmPassword: "",
+      errors: this.validator.getDefaultErrorState(),
+    };
+  }
 
   getLinkReference = (
     path: string
@@ -79,7 +76,7 @@ class SetPasswordScreen extends React.Component<
     const { email, resetToken } = this.props.match.params;
 
     const validationState = this.validator.validate(this.state);
-    this.setState({ errors: validationState.errors });
+    this.setState({ ...validationState });
 
     if (validationState.isValid && this.props.resetPassword) {
       this.props.resetPassword(email, resetToken, this.state.password);
@@ -93,12 +90,10 @@ class SetPasswordScreen extends React.Component<
 
     return (
       <div className="screen-container">
-        <Row className="header-block">
-          <h2>Reset Password</h2>
-        </Row>
+        <h2>Reset Password</h2>
         <Form
           onSubmit={this.handleSubmit}
-          validated={!!this.state.errors}
+          validated={this.state.isValid !== undefined}
           noValidate
         >
           <Form.Group controlId="password">
@@ -110,11 +105,11 @@ class SetPasswordScreen extends React.Component<
               value={this.state.password}
               required
             />
-            <Form.Control.Feedback
-              type={this.state.errors.password.isInvalid ? "invalid" : "valid"}
-            >
-              {this.state.errors.password.message}
-            </Form.Control.Feedback>
+            {this.state.errors.password.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.password.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Form.Group controlId="confirmPassword">
             <Form.Label>{validationRules.confirmPassword.label}</Form.Label>
@@ -124,21 +119,17 @@ class SetPasswordScreen extends React.Component<
               value={this.state.confirmPassword}
               required
             />
-            <Form.Control.Feedback
-              type={
-                this.state.errors.confirmPassword.isInvalid
-                  ? "invalid"
-                  : "valid"
-              }
-            >
-              {this.state.errors.confirmPassword.message}
-            </Form.Control.Feedback>
+            {this.state.errors.confirmPassword.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.confirmPassword.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Button variant="primary" type="submit">
             Reset Password
           </Button>
         </Form>
-        <Row>
+        <Row className="form-post-links">
           <Col>
             <Link to="/login">{"Already know your password? Login"}</Link>
           </Col>

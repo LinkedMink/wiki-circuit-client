@@ -37,6 +37,12 @@ export interface ValidationResult<T, K extends keyof T = keyof T> {
   errors: Record<K, FieldResult | never>;
 }
 
+export interface FormComponentState<T, K extends keyof T = keyof T> {
+  [key: string]: unknown;
+  isValid?: boolean;
+  errors: Record<K, FieldResult | never>;
+}
+
 export enum Comparison {
   GREATER = 0,
   GREATER_OR_EQUAL = 1,
@@ -46,6 +52,10 @@ export enum Comparison {
 }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export const hasValidationErrors = <T, K extends keyof T = keyof T>(
+  errors: Record<K, FieldResult | never>
+): boolean => Object.keys(errors).some((e) => errors[e].isInvalid);
 
 export class Validator<T, K extends keyof T = keyof T> {
   constructor(private readonly rules: ValidationRules<T, K>) {}

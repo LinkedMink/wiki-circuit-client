@@ -5,6 +5,7 @@ import { Redirect, Link as RouterLink, Link } from "react-router-dom";
 import { MIN_PASSWORD_LENGTH } from "../../Constants/Account";
 import {
   FieldResult,
+  FormComponentState,
   ValidationRules,
   ValidationRuleType,
   Validator,
@@ -21,15 +22,8 @@ export interface RegisterScreenFields {
   confirmPassword: string;
 }
 
-export interface RegisterScreenState extends RegisterScreenFields {
-  errors: RegisterScreenErrors;
-  [key: string]: unknown;
-}
-
-type RegisterScreenErrors = Record<
-  keyof RegisterScreenFields,
-  FieldResult | never
->;
+export type RegisterScreenState = RegisterScreenFields &
+  FormComponentState<RegisterScreenFields>;
 
 const validationRules: ValidationRules<RegisterScreenFields> = {
   email: {
@@ -60,12 +54,15 @@ class RegisterScreen extends React.Component<
     validationRules
   );
 
-  state = {
-    email: "",
-    password: "",
-    confirmPassword: "",
-    errors: this.validator.getDefaultErrorState(),
-  };
+  constructor(props: RegisterScreenProps) {
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      errors: this.validator.getDefaultErrorState(),
+    };
+  }
 
   getLinkReference = (
     path: string
@@ -87,7 +84,7 @@ class RegisterScreen extends React.Component<
     event.preventDefault();
 
     const validationState = this.validator.validate(this.state);
-    this.setState({ errors: validationState.errors });
+    this.setState({ ...validationState });
 
     if (validationState.isValid && this.props.register) {
       this.props.register(this.state.email, this.state.password);
@@ -101,12 +98,10 @@ class RegisterScreen extends React.Component<
 
     return (
       <div className="screen-container">
-        <Row className="header-block">
-          <h2>Register</h2>
-        </Row>
+        <h2>Register</h2>
         <Form
           onSubmit={this.handleSubmit}
-          validated={!!this.state.errors}
+          validated={this.state.isValid !== undefined}
           noValidate
         >
           <Form.Group controlId="email">
@@ -120,11 +115,11 @@ class RegisterScreen extends React.Component<
               required
               autoFocus
             />
-            <Form.Control.Feedback
-              type={this.state.errors.email.isInvalid ? "invalid" : "valid"}
-            >
-              {this.state.errors.email.message}
-            </Form.Control.Feedback>
+            {this.state.errors.email.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.email.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Form.Group controlId="password">
             <Form.Label>{validationRules.password.label}</Form.Label>
@@ -135,11 +130,11 @@ class RegisterScreen extends React.Component<
               value={this.state.password}
               required
             />
-            <Form.Control.Feedback
-              type={this.state.errors.password.isInvalid ? "invalid" : "valid"}
-            >
-              {this.state.errors.password.message}
-            </Form.Control.Feedback>
+            {this.state.errors.password.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.password.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Form.Group controlId="confirmPassword">
             <Form.Label>{validationRules.confirmPassword.label}</Form.Label>
@@ -149,21 +144,17 @@ class RegisterScreen extends React.Component<
               value={this.state.confirmPassword}
               required
             />
-            <Form.Control.Feedback
-              type={
-                this.state.errors.confirmPassword.isInvalid
-                  ? "invalid"
-                  : "valid"
-              }
-            >
-              {this.state.errors.confirmPassword.message}
-            </Form.Control.Feedback>
+            {this.state.errors.confirmPassword.isInvalid && (
+              <Form.Control.Feedback type="invalid">
+                {this.state.errors.confirmPassword.message}
+              </Form.Control.Feedback>
+            )}
           </Form.Group>
           <Button variant="primary" type="submit">
             Register
           </Button>
         </Form>
-        <Row>
+        <Row className="form-post-links">
           <Col>
             <Link to="/login">{"Already have an account? Login"}</Link>
           </Col>

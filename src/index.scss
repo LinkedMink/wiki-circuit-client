@@ -1,3 +1,7 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
 html, body {
   height: 100%;
 }
@@ -19,8 +23,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+.full-container {
+  padding: 0 1rem;
+}
+
 .screen-container {
-  padding: 0 15px
+  padding: 0 1rem;
+
+  @include media-breakpoint-up(md) {
+    margin: 0 auto;
+    width: 75%;
+  }
+
+  @include media-breakpoint-up(lg) {
+    width: 60%;
+  }
+
+  @include media-breakpoint-up(xl) {
+    width: 50%;
+  }
 }
 
 .header-block {
@@ -35,6 +56,10 @@ code {
 
 .form-label {
   font-weight: 700;
+}
+
+.form-post-links {
+  margin-top: 1rem;
 }
 
 .fade-enter {

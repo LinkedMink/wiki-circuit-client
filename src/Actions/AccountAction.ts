@@ -1,4 +1,5 @@
 import { Action } from "redux";
+import { JwtPayload } from "../Constants/Account";
 
 export enum AccountActionType {
   SaveSession = "SAVE_SESSION",
@@ -6,15 +7,23 @@ export enum AccountActionType {
   SaveAccount = "SAVE_ACCOUNT",
 }
 
-export interface AccountAction extends Action<AccountActionType> {
-  type: AccountActionType;
-  payload: null | string | Record<string, unknown>;
+export interface AccountTokens {
+  jwtToken: string;
+  decodedToken: JwtPayload;
 }
 
-export function saveSession(jwtToken: string): AccountAction {
+export interface AccountAction extends Action<AccountActionType> {
+  type: AccountActionType;
+  payload: null | Record<string, unknown> | AccountTokens;
+}
+
+export function saveSession(
+  jwtToken: string,
+  decodedToken: JwtPayload
+): AccountAction {
   return {
     type: AccountActionType.SaveSession,
-    payload: jwtToken,
+    payload: { jwtToken, decodedToken },
   };
 }
 

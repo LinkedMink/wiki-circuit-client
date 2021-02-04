@@ -10,15 +10,18 @@ import SetPasswordContainer from "../Containers/Screens/SetPasswordContainer";
 import RegisterContainer from "../Containers/Screens/RegisterContainer";
 import AboutScreen from "./Screens/AboutScreen";
 import UnauthorizedScreen from "./Screens/UnauthorizedScreen";
-import HomeScreen from "./Screens/HomeScreen";
+import VisualizationContainer from "../Containers/VisualizationContainer";
+import AccountContainer from "../Containers/Screens/AccountContainer";
 
 export interface RouterOutletProps {
-  defaultRedirect: string;
+  defaultRedirect?: string;
 }
 
 class RouterOutlet extends React.Component<RouterOutletProps> {
   getDefaultRedirect = (): string => {
-    return this.props.defaultRedirect ? this.props.defaultRedirect : "/login";
+    return this.props.defaultRedirect
+      ? this.props.defaultRedirect
+      : "/visualization";
   };
 
   render = (): React.ReactNode => (
@@ -39,10 +42,21 @@ class RouterOutlet extends React.Component<RouterOutletProps> {
         component={UnauthorizedScreen}
       />
       <RouteAuthContainer
+        exact={true}
+        path="/account"
+        component={AccountContainer}
+      />
+      <RouteAuthContainer
         requiredClaim={Claim.TASK_SCHEDULE}
         exact={true}
-        path="/home"
-        component={HomeScreen}
+        path="/visualization"
+        component={VisualizationContainer}
+      />
+      <RouteAuthContainer
+        requiredClaim={Claim.TASK_SCHEDULE}
+        exact={true}
+        path="/visualization/:id"
+        component={VisualizationContainer}
       />
       <Redirect from="/" to={this.getDefaultRedirect()} />
     </Switch>

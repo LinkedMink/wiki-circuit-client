@@ -10,7 +10,7 @@ const SUCCESS_MESSAGE =
 
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.account.token ? true : false,
+    isLoggedIn: state.account.jwtToken ? true : false,
   };
 };
 

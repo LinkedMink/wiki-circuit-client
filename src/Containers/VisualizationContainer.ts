@@ -12,7 +12,7 @@ import {
 } from "../Shared/RequestFactory";
 import VisualizationScreen from "../Components/Screens/VisualizationScreen";
 import { saveArticleData } from "../Actions/ArticleAction";
-import { alertError } from "../Actions/AlertAction";
+import { alertError, alertSuccess } from "../Actions/AlertAction";
 import {
   loadingStart,
   loadingReport,
@@ -109,8 +109,10 @@ const mapDispatchToProps: MapDispatchToPropsFunction<unknown, unknown> = (
             );
           }
 
-          dispatch(loadingEnd());
-          return dispatch(alertError(json.data));
+          if (json.status !== ResponseCode.SUCCESS) {
+            dispatch(loadingEnd());
+            return dispatch(alertError(json.data));
+          }
         }
 
         if (json.status === ResponseCode.SUCCESS) {

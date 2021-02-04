@@ -1,18 +1,10 @@
-import * as jwt from "jsonwebtoken";
 import { Reducer } from "redux";
-import store from "../Store";
-import { AccountAction, AccountActionType } from "../Actions/AccountAction";
-import { Claim } from "../Constants/Account";
-
-export interface JwtPayload {
-  aud: string;
-  claims: Set<Claim>;
-  email: string;
-  exp: number;
-  iat: number;
-  iss: string;
-  sub: string;
-}
+import {
+  AccountAction,
+  AccountActionType,
+  AccountTokens,
+} from "../Actions/AccountAction";
+import { JwtPayload } from "../Constants/Account";
 
 export interface Account {
   jwtToken?: string;
@@ -27,15 +19,10 @@ const accountReducer: Reducer<AccountReduced, AccountAction> = (
   action: AccountAction
 ): AccountReduced => {
   if (action.type === AccountActionType.SaveSession) {
-    const jwtToken = action.payload as string;
-    const signerKey = store.getState().config?.signerKey;
-    const decodedToken = (signerKey
-      ? jwt.verify(jwtToken, signerKey)
-      : jwt.decode(jwtToken)) as JwtPayload;
-    decodedToken.claims = new Set(decodedToken.claims);
+    const tokens = action.payload as AccountTokens;
     return Object.assign({}, state, {
-      jwtToken,
-      decodedToken,
+      jwtToken: tokens.jwtToken,
+      decodedToken: tokens.decodedToken,
     });
   } else if (action.type === AccountActionType.DestroySession) {
     return Object.assign({}, state, {

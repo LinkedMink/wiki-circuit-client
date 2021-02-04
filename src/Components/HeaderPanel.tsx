@@ -1,5 +1,8 @@
 import React from "react";
-import { Nav, Navbar } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
+import LeftNavGroupContainer from "../Containers/LeftNavGroupContainer";
+import RightNavGroupContainer from "../Containers/RightNavGroupContainer";
+import "./HeaderPanel.scss";
 
 class HeaderPanel extends React.Component {
   render(): React.ReactNode {
@@ -8,8 +11,8 @@ class HeaderPanel extends React.Component {
         <Navbar.Brand>Wiki Circuit</Navbar.Brand>
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
-          <Nav></Nav>
-          <Nav></Nav>
+          <LeftNavGroupContainer></LeftNavGroupContainer>
+          <RightNavGroupContainer></RightNavGroupContainer>
         </Navbar.Collapse>
       </Navbar>
     );

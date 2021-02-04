@@ -10,7 +10,7 @@ const SUCCESS_MESSAGE = "A reset link has been sent. Check your email.";
 
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.account.token ? true : false,
+    isLoggedIn: state.account.jwtToken ? true : false,
   };
 };
 
